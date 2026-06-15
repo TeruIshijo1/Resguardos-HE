@@ -38,6 +38,12 @@ def migrar_db():
         try: cursor.execute(f"ALTER TABLE inventario ADD COLUMN {columna} {tipo}")
         except: pass 
     
+    # Agregar columna fecha_asig en empleados y bajas si no existen
+    try: cursor.execute("ALTER TABLE empleados ADD COLUMN fecha_asig TEXT")
+    except: pass
+    try: cursor.execute("ALTER TABLE bajas ADD COLUMN fecha_asig TEXT")
+    except: pass
+    
     # 2. Permitir IPs duplicadas controladas
     try:
         cursor.execute('''CREATE TABLE IF NOT EXISTS ips_new (
@@ -233,9 +239,9 @@ def crear_empleado():
         empleado_id = generar_id()
         db = get_db()
         db.execute('''INSERT INTO empleados
-            (id, nombre, fecha_alta, direccion, area, ubicacion, telefono, observaciones, cuentas)
-            VALUES(?,?,?,?,?,?,?,?,?)''',
-            (empleado_id, datos['nombre'], datos.get('fechaAlta', fecha_hoy()), datos.get('direccion'),
+            (id, nombre, fecha_alta, fecha_asig, direccion, area, ubicacion, telefono, observaciones, cuentas)
+            VALUES(?,?,?,?,?,?,?,?,?,?)''',
+            (empleado_id, datos['nombre'], datos.get('fechaAlta', fecha_hoy()), fecha_hoy(), datos.get('direccion'),
              datos.get('area'), datos.get('ubicacion'), datos.get('telefono'),
              datos.get('observaciones'), json.dumps(datos.get('cuentas', {}))))
         
@@ -256,10 +262,10 @@ def actualizar_empleado(empleado_id):
         datos = request.json
         db = get_db()
         db.execute('''UPDATE empleados SET nombre=?, fecha_alta=?, direccion=?, area=?,
-                      ubicacion=?, telefono=?, observaciones=?, cuentas=? WHERE id=?''',
+                      ubicacion=?, telefono=?, observaciones=?, cuentas=?, fecha_asig=? WHERE id=?''',
                    (datos['nombre'], datos.get('fechaAlta'), datos.get('direccion'), datos.get('area'),
                     datos.get('ubicacion'), datos.get('telefono'), datos.get('observaciones'),
-                    json.dumps(datos.get('cuentas', {})), empleado_id))
+                    json.dumps(datos.get('cuentas', {})), fecha_hoy(), empleado_id))
         db.commit(); db.close()
         return jsonify({'ok': True})
     except Exception as e:
@@ -288,6 +294,7 @@ def actualizar_asignaciones(empleado_id):
         if 'cuentas' in datos:
             db.execute('UPDATE empleados SET cuentas=? WHERE id=?', (json.dumps(datos['cuentas']), empleado_id))
             
+        db.execute('UPDATE empleados SET fecha_asig=? WHERE id=?', (fecha_hoy(), empleado_id))
         db.commit(); db.close()
         return jsonify({'ok': True})
     except Exception as e:
@@ -320,10 +327,10 @@ def registrar_baja():
         baja_id = generar_id()
         
         db.execute('''INSERT INTO bajas
-            (id, emp_id, nombre, fecha_alta, fecha_baja, motivo, direccion, area,
+            (id, emp_id, nombre, fecha_alta, fecha_asig, fecha_baja, motivo, direccion, area,
              ubicacion, telefono, cuentas, equipos_snap, archivo_alta)
-            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''',
-            (baja_id, empleado_id, empleado['nombre'], empleado['fecha_alta'], datos.get('fechaBaja', fecha_hoy()),
+            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+            (baja_id, empleado_id, empleado['nombre'], empleado['fecha_alta'], empleado['fecha_asig'], datos.get('fechaBaja', fecha_hoy()),
              datos.get('motivo'), empleado['direccion'], empleado['area'], empleado['ubicacion'],
              empleado['telefono'], empleado['cuentas'], json.dumps(equipos), empleado['archivo_alta']))
              

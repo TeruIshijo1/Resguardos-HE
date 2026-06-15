@@ -160,7 +160,7 @@ def build_doc(emp, equipos_asignados, tipo='alta'):
         ('Responsable:',        emp.get('nombre','—'),
          'Departamento/Área:',  emp.get('area') or '—'),
         ('Ubicación:',          emp.get('ubicacion') or '—',
-         'Fecha de Asignación:', fmt_fecha(emp.get('fecha_alta'))),
+         'Fecha de Asignación:', fmt_fecha(emp.get('fecha_asig') or emp.get('fecha_alta'))),
         ('Teléfono:',           emp.get('telefono') or '—',
          '', ''),
     ]
