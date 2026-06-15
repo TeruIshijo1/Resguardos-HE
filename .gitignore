@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+
+# Base de datos local
+database.db
+database.db-journal
+database.db-wal
+database.db-shm
+
+# Archivos cargados por usuarios (Expedientes escaneados, Hojas de servicio, etc.)
+archivos/*
+!archivos/.gitkeep
+
+# Temporales de Office / Word
+*.docx.tmp
+~$*.docx
+*.log

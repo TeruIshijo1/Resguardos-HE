@@ -1,0 +1,2915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resguardos — Hospital Escandón</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+    
+    :root {
+      /* Paleta Institucional Hospital Escandón */
+      --primary: #004687;       /* Azul Oscuro (Primario) */
+      --primary-dark: #002d5a;  /* Azul Muy Oscuro (Fondos) */
+      --secondary: #0088c9;     /* Azul Claro (Acentos) */
+      --secondary-light: #e6f3fa; 
+      
+      /* Escala de grises moderna */
+      --bg: #f4f6f8;            
+      --surface: #ffffff;
+      --s2: #f8fafc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --t2: #64748b;
+      
+      /* Colores de estado */
+      --red: #ef4444; 
+      --red2: #dc2626; 
+      --red-bg: #fef2f2;
+      --green: #10b981; 
+      --green-bg: #ecfdf5;
+      --yellow: #f59e0b; 
+      --yellow-bg: #fffbeb;
+      
+      /* Efectos y Estructura */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+    /* ── PANTALLA DE LOGIN ── */
+    #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .login-box { background: var(--surface); padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--border); width: 100%; max-width: 360px; text-align: center; }
+    .login-logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--primary); margin-bottom: 5px; }
+    .login-sub { font-size: 12px; color: var(--secondary); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 25px; text-transform: uppercase; }
+    .login-box input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; text-align: center; outline: none; margin-bottom: 15px; transition: border 0.2s; }
+    .login-box input:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px var(--secondary-light); }
+    .login-box button { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-sm); }
+    .login-box button:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+    /* ── LAYOUT Y PANEL LATERAL ── */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; background: linear-gradient(180deg, var(--primary), var(--primary-dark)); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; box-shadow: var(--shadow-lg); }
+    .logo { padding: 25px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .logo .h { font-family: 'DM Serif Display', serif; font-size: 19px; color: #fff; line-height: 1.2; }
+    .logo .s { font-size: 10px; color: rgba(255,255,255,0.6); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+    .logo .d { font-size: 11.5px; color: #60a5fa; margin-top: 4px; font-weight: 500; }
+    .nav-sec { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); padding: 15px 18px 5px; font-weight: 600; }
+    
+    .ni { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 13px; transition: all 0.2s; margin: 2px 10px; border: none; background: transparent; width: calc(100% - 20px); text-align: left; font-family: 'DM Sans', sans-serif; }
+    .ni:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .ni.active { background: var(--secondary); color: #fff; font-weight: 600; box-shadow: var(--shadow-md); border-left: 3px solid #fff; }
+    .sidebar-foot { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.4); margin-top: auto; }
+    
+    .main { margin-left: 250px; flex: 1; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
+    .topbar-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--primary); }
+
+    /* ── BOTONES ── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; font-family: 'DM Sans', sans-serif; text-decoration: none; white-space: nowrap; }
+    .bp { background: linear-gradient(135deg, var(--secondary), var(--primary)); color: #fff; box-shadow: var(--shadow-sm); }
+    .bp:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .bs { background: var(--surface); color: var(--text); border-color: var(--border); }
+    .bs:hover { background: var(--s2); border-color: #cbd5e1; }
+    .bd { background: var(--red-bg); color: var(--red2); border-color: #fecaca; }
+    .bd:hover { background: var(--red); color: #fff; }
+    .bg-btn { background: var(--green-bg); color: #047857; border-color: #a7f3d0; }
+    .bg-btn:hover { background: var(--green); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+    /* ── CONTENIDO Y TARJETAS ── */
+    .content { padding: 25px 30px; }
+    .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+    .dash-grid.wide { grid-template-columns: repeat(6, 1fr); }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-sm); transition: transform 0.2s; }
+    .stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--secondary-light); }
+    .stat-l { font-size: 11px; color: var(--t2); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .stat-v { font-family: 'DM Serif Display', serif; font-size: 34px; margin-top: 5px; line-height: 1; }
+    .stat-v.g { color: var(--green); } .stat-v.r { color: var(--red); } .stat-v.y { color: var(--yellow); } .stat-v.b { color: var(--primary); } .stat-v.p { color: #8b5cf6; }
+    
+    .alert-banner { background: var(--red-bg); border: 1px solid #fecaca; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 20px; font-size: 13.5px; color: var(--red2); display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-sm); }
+    .alert-banner.yellow { background: var(--yellow-bg); border-color: #fde68a; color: #b45309; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-md); overflow: hidden; margin-bottom: 20px; }
+    .card-h { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: #f8fafc; }
+    .card-title { font-weight: 600; font-size: 14.5px; color: var(--primary); }
+    
+    .search-bar { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; min-width: 220px; transition: border 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
+    .search-bar:focus-within { border-color: var(--secondary); box-shadow: 0 0 0 2px var(--secondary-light); }
+    .search-bar input { border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; }
+
+    /* ── TABLAS ── */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--t2); background: var(--surface); border-bottom: 2px solid var(--border); font-weight: 600; }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f1f5f9; }
+    
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .cg { background: var(--green-bg); color: #047857; }
+    .cr { background: var(--red-bg); color: var(--red2); }
+    .cy { background: var(--yellow-bg); color: #b45309; }
+    .cb { background: var(--secondary-light); color: var(--primary); }
+    .cp { background: #f5f3ff; color: #6d28d9; }
+    .co { background: #fff7ed; color: #c2410c; }
+    .cgr { background: #f1f5f9; color: #475569; }
+    .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .emp { text-align: center; padding: 40px 20px; color: var(--t2); }
+    
+    .link { color: var(--secondary); cursor: pointer; font-weight: 500; transition: color 0.2s; }
+    .link:hover { color: var(--primary); text-decoration: underline; }
+
+    /* ── MODALES ── */
+    .ov { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 1000; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(2px); }
+    .ov.open { display: flex; }
+    .modal { background: var(--surface); border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); width: 100%; max-width: 750px; max-height: 90vh; overflow-y: auto; animation: mIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+    .modal.sm { max-width: 480px; } .modal.md { max-width: 600px; }
+    @keyframes mIn { from { opacity: 0; transform: translateY(15px) scale(0.97); } to { opacity: 1; transform: none; } }
+    
+    .mh { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; background: #f8fafc; border-radius: 16px 16px 0 0; }
+    .mt { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--primary); }
+    .ms { font-size: 12px; color: var(--t2); margin-top: 3px; }
+    .mc { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--t2); transition: all 0.2s; box-shadow: var(--shadow-sm); }
+    .mc:hover { background: var(--red-bg); color: var(--red2); border-color: #fecaca; }
+    .mb { padding: 20px 24px; }
+    .mf { padding: 15px 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 10px; background: #f8fafc; border-radius: 0 0 16px 16px; }
+
+    /* ── FORMULARIOS ── */
+    .fs { margin-bottom: 22px; }
+    .fst { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--secondary-light); }
+    .fg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .fg3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .fi { display: flex; flex-direction: column; gap: 5px; }
+    .fi.s2 { grid-column: span 2; } 
+    label { font-size: 12px; font-weight: 600; color: #334155; }
+    input[type=text], input[type=date], input[type=number], select, textarea { border: 1px solid #cbd5e1; border-radius: 8px; padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); background: var(--surface); outline: none; transition: all 0.2s; width: 100%; box-shadow: inset 0 1px 2px rgba(0,0,0,0.01); }
+    input:focus, select:focus, textarea:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px var(--secondary-light); }
+    textarea { resize: vertical; min-height: 60px; }
+
+    /* ── CUENTAS Y EQUIPOS (INTERNOS) ── */
+    .ci { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; transition: border 0.2s; }
+    .ci:hover { border-color: #cbd5e1; }
+    .ci input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--secondary); cursor: pointer; }
+    .ci-lbl { font-size: 13px; font-weight: 600; min-width: 80px; color: var(--primary); }
+    .ci-inp { flex: 1; border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 12.5px; display: none; }
+    .ci-inp.show { display: block; }
+    
+    .eqs { display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto; margin-bottom: 10px; padding-right: 4px; }
+    .eqi { display: grid; grid-template-columns: 1fr auto 75px auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; box-shadow: var(--shadow-sm); }
+    .eqi.sel { border-left: 4px solid var(--secondary); }
+    .eqi-name { font-size: 13px; font-weight: 600; color: var(--primary); }
+    .eqi-detail { font-size: 11.5px; color: var(--t2); margin-top: 2px; }
+    .eqq { width: 60px; text-align: center; font-weight: 600; }
+    
+    .add-eq { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; color: var(--t2); cursor: pointer; font-size: 12.5px; font-weight: 500; font-family: 'DM Sans', sans-serif; transition: all 0.2s; width: 100%; }
+    .add-eq:hover { border-color: var(--secondary); color: var(--secondary); background: var(--secondary-light); }
+    .rm { background: var(--red-bg); border: 1px solid #fecaca; cursor: pointer; color: var(--red2); padding: 4px; border-radius: 6px; display: flex; align-items: center; transition: 0.2s; }
+    .rm:hover { background: var(--red); color: white; }
+
+    /* ── IP TABLE ── */
+    .ip-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+    .ip-libre { background: var(--green); } .ip-asig { background: var(--yellow); } .ip-res { background: var(--secondary); } .ip-dup { background: var(--red); }
+
+    /* ── ARCHIVOS ── */
+    .ful { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 25px 15px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc; display: block; }
+    .ful:hover { border-color: var(--secondary); background: var(--secondary-light); }
+    .ful p { font-size: 13px; color: var(--t2); margin-top: 8px; font-weight: 500; }
+    .ful-ok { font-size: 12.5px; color: #047857; font-weight: 600; margin-top: 6px; }
+
+    /* ── DETALLES ── */
+    .dg { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .dl { font-size: 10.5px; color: var(--t2); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 2px; }
+    .dv { font-size: 13.5px; color: var(--text); }
+    .eq-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 12px; margin: 3px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+    .eq-tag:hover { border-color: var(--secondary); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .arch-btn { display: inline-flex; align-items: center; gap: 4px; padding: 5px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; color: var(--primary); text-decoration: none; font-family: 'DM Sans', sans-serif; transition: all 0.2s; font-weight: 500; }
+    .arch-btn:hover { background: var(--secondary-light); border-color: #bae6fd; }
+
+    /* ── FILTROS Y OTROS ── */
+    .fbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .fsel { border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--surface); color: var(--text); outline: none; font-weight: 500; cursor: pointer; }
+    .fsel:focus { border-color: var(--secondary); }
+    .sp { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow-lg); z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.g { background: #047857; } .toast.r { background: var(--red2); }
+    .page { display: none; animation: fadeIn 0.3s ease; } .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ── EXPORT CARD ── */
+    .exp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    .exp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+    .exp-card:hover { border-color: var(--secondary); background: var(--secondary-light); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .exp-card .icon { font-size: 32px; margin-bottom: 12px; }
+    .exp-card .name { font-weight: 600; font-size: 14px; color: var(--primary); }
+    .exp-card .desc { font-size: 11.5px; color: var(--t2); margin-top: 5px; }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #print-area, #print-area * { visibility: visible !important; }
+      #print-area { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; display: flex !important; flex-direction: column; align-items: center; justify-content: center; background: white; z-index: 99999; }
+    }
+    #m-sel-eq, #m-nuevo-eq { z-index: 1100 !important; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+
+<datalist id="dl-marcas">
+    <option value="Lenovo"><option value="HP"><option value="Dell"><option value="Logitech">
+    <option value="Epson"><option value="Canon"><option value="Cisco"><option value="Hikvision">
+</datalist>
+<datalist id="dl-cpu">
+    <option value="Intel Core i3"><option value="Intel Core i5"><option value="Intel Core i7">
+    <option value="AMD Ryzen 3"><option value="AMD Ryzen 5"><option value="AMD Ryzen 7">
+</datalist>
+<datalist id="dl-ips-libres"></datalist>
+
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">Hospital Escandón</div>
+    <div class="login-sub">SISTEMA DE RESGUARDOS</div>
+    <input type="password" id="login-pass" placeholder="Ingresa la contraseña" onkeypress="if(event.key==='Enter') checkLogin()">
+    <button onclick="checkLogin()">Acceder al Sistema</button>
+  </div>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="logo">
+    <div class="h">Hospital Escandón</div>
+    <div class="s">Sistema de Resguardos</div>
+    <div class="d">Área de Sistemas</div>
+  </div>
+  <nav id="sidebar-nav">
+    <div class="nav-sec">General</div>
+    <button class="ni active" onclick="showPage('dashboard')">📊 Panel Principal</button>
+    <div class="nav-sec">Personal</div>
+    <button class="ni" onclick="showPage('empleados')">👥 Personal Activo</button>
+    <button class="ni" onclick="showPage('prestamos')">⏱ Préstamos Temporales</button>
+    <button class="ni" onclick="showPage('bajas')">🚪 Bajas / Historial</button>
+    <div class="nav-sec">Activos Fijos</div>
+    <button class="ni" onclick="showPage('inventario')">🖥 Inventario General</button>
+    <button class="ni" onclick="showPage('impresoras')">🖨 Impresoras</button>
+    <button class="ni" onclick="showPage('servicios')">🛠 Hojas de Servicio</button>
+    <button class="ni" onclick="showPage('camaras')">📷 Cámaras CCTV</button>
+    <button class="ni" onclick="showPage('red')">🔌 Nodos de Red</button>
+    <div class="nav-sec">Red Lógica</div>
+    <button class="ni" onclick="showPage('ips')">🌐 Gestión de IPs</button>
+    <div class="nav-sec">Reportes</div>
+    <button class="ni" onclick="showPage('exportar')">📥 Exportar a Excel</button>
+  </nav>
+  <div class="sidebar-foot">v4.2 · Enterprise Edition<br>Red: 192.168.254.150:5000</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div id="topbar-btn"></div>
+  </div>
+
+  <div class="page active content" id="page-dashboard">
+    <div id="alertas-container"></div>
+    <div class="dash-grid wide" id="dash-stats"></div>
+    <div class="fg" style="margin-top:0">
+      <div>
+        <div class="card">
+          <div class="card-h"><span class="card-title">Últimos empleados registrados</span></div>
+          <table><thead><tr><th>Empleado</th><th>Área</th><th>Alta</th></tr></thead><tbody id="dash-emp"></tbody></table>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-title">Equipos sin asignar en Almacén</span></div>
+          <table><thead><tr><th>Tipo</th><th>Descripción</th><th>Libres</th></tr></thead><tbody id="dash-inv"></tbody></table>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-h"><span class="card-title">Direccionamiento IP Reciente</span></div>
+          <table><thead><tr><th>IP</th><th>Asignada a</th><th>Tipo</th></tr></thead><tbody id="dash-ips"></tbody></table>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-title">Plan de Mejora (Obsolescencia)</span></div>
+          <div style="max-height: 280px; overflow-y: auto;">
+            <table><thead><tr><th>Equipo</th><th>Asignado a</th><th>Requiere</th></tr></thead><tbody id="dash-obsoletos"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page content" id="page-empleados">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Directorio de Personal Activo</span>
+        <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar empleado o área..." oninput="filtEmp(this.value)"></div>
+      </div>
+      <table><thead><tr><th>Empleado</th><th>Área / Dirección</th><th>Equipos</th><th>Cuentas</th><th>Alta</th><th>Acciones</th></tr></thead>
+      <tbody id="t-empleados"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-prestamos">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Registro de Préstamos Temporales</span>
+        <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar solicitante..." oninput="filtPrestamos(this.value)"></div>
+      </div>
+      <table><thead><tr><th>Solicitante</th><th>Área</th><th>Fecha Préstamo</th><th>Devolución Esperada</th><th>Equipos Prestados</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="t-prestamos"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-bajas">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Historial de Bajas</span>
+        <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar..." oninput="filtBajas(this.value)"></div>
+      </div>
+      <table><thead><tr><th>Empleado</th><th>Área</th><th>Fecha Baja</th><th>Motivo</th><th>Equipos Devueltos</th><th>Archivos</th></tr></thead>
+      <tbody id="t-bajas"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-inventario">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Inventario General de Equipos</span>
+        <div class="fbar">
+          <select class="fsel" id="f-tipo-inv" onchange="filtInv()">
+            <option value="">Todos los tipos</option>
+            <option>PC</option><option>Laptop</option><option>Monitor</option><option>Mouse</option><option>Teclado</option>
+            <option>Impresora de Tinta</option><option>Impresora de Cartucho</option><option>Impresora de Tóner</option>
+            <option>Impresora Térmica</option><option>Impresora de etiquetas</option>
+            <option>Teléfono IP</option><option>Teléfono Conmutador</option><option>Celular</option>
+            <option>Audífonos Diadema</option><option>Adaptador RED-USB</option><option>Lector de código de barras</option>
+            <option>Proyector</option><option>Memoria USB</option><option>No Break</option><option>Radio</option><option>Cargador</option>
+            <option>Smart TV</option><option>Otro</option>
+          </select>
+          <select class="fsel" id="f-est-inv" onchange="filtInv()">
+            <option value="">Todos los estados</option><option value="libre">Libres</option><option value="prestado">Prestados/Asignados</option><option value="dañado">Dañados</option>
+          </select>
+          <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="s-inv" placeholder="Buscar equipo..." oninput="filtInv()"></div>
+        </div>
+      </div>
+      <table><thead><tr><th>Tipo</th><th>Descripción</th><th>N/S · IP</th><th>Especificaciones</th><th>Stock</th><th>Asignado a</th><th>Acciones</th></tr></thead>
+      <tbody id="t-inv"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-impresoras">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Registro de Impresoras</span>
+        <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar..." oninput="filtImp(this.value)"></div>
+      </div>
+      <table><thead><tr><th>Nombre / Marca</th><th>Consumible</th><th>Ubicación</th><th>IP</th><th>Equipos Conectados</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="t-imp"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-servicios">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Hojas de Servicio y Mantenimiento</span>
+        <div class="fbar">
+          <select class="fsel" id="f-servicio-imp" onchange="filtServicios()"><option value="">Todas las impresoras</option></select>
+          <select class="fsel" id="f-servicio-cat" onchange="filtServicios()">
+            <option value="">Todas las categorías</option>
+            <option value="mantenimiento">Mantenimiento</option>
+            <option value="servicio de revision/reparacion">Servicio de revisión/reparación</option>
+          </select>
+          <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="s-servicio" placeholder="Buscar por nombre..." oninput="filtServicios()"></div>
+          <input type="date" class="fsel" id="f-servicio-fecha" onchange="filtServicios()" style="width: auto;">
+          <button class="btn bs" onclick="clearServicioFilters()" style="padding: 7px 12px;">Limpiar Filtros</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Documento / Nombre</th>
+            <th>Impresora</th>
+            <th>Ubicación</th>
+            <th>Fecha</th>
+            <th>Categoría</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="t-servicios"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-camaras">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Registro de Cámaras de Seguridad</span>
+        <div class="fbar">
+          <select class="fsel" id="f-area-cam" onchange="filtCam()"><option value="">Todas las áreas</option></select>
+          <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar ubicación..." oninput="filtCam(this.value)"></div>
+        </div>
+      </div>
+      <table><thead><tr><th>Área</th><th>Ubicación</th><th>Marca / Modelo</th><th>IP</th><th>Estado</th><th>Notas</th><th>Acciones</th></tr></thead>
+      <tbody id="t-cam"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-red">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Red e Infraestructura</span>
+        <div class="fbar">
+          <select class="fsel" id="f-tipo-red" onchange="filtRed()"><option value="">Todos los tipos</option></select>
+          <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Buscar..." oninput="filtRed(this.value)"></div>
+        </div>
+      </div>
+      <table><thead><tr><th>Tipo</th><th>Nombre / Marca</th><th>Modelo · N/S</th><th>IP</th><th>Ubicación</th><th>Puertos</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="t-red"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-ips">
+    <div class="card">
+      <div class="card-h">
+        <span class="card-title">Gestión de IPs <span id="ip-counter" style="font-size:11.5px;color:var(--t2);font-weight:500;margin-left:12px;background:var(--s2);padding:4px 8px;border-radius:6px"></span></span>
+        <div class="fbar">
+          <select class="fsel" id="f-subred-ip" onchange="filtIPs()">
+            <option value="">Todas las subredes</option>
+            <option value="192.168.254.">192.168.254.x (Datos)</option>
+            <option value="172.16.90.">172.16.90.x (Voz/Telefonía)</option>
+          </select>
+          <select class="fsel" id="f-est-ip" onchange="filtIPs()">
+            <option value="">Todos los estados</option>
+            <option value="libre">Libres</option>
+            <option value="asignada">Asignadas</option>
+            <option value="reservada">Reservadas</option>
+          </select>
+          <div class="search-bar"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="s-ip" placeholder="Buscar IP o dígitos..." oninput="filtIPs()"></div>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th style="width:155px">Dirección IP</th><th style="width:110px">Estado</th><th>Asignada a</th><th style="width:145px">Dispositivo</th><th>Notas</th><th style="width:70px"></th></tr></thead>
+        <tbody id="t-ips"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="page content" id="page-exportar">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-h"><span class="card-title">Exportación Global</span></div>
+      <div style="padding:20px">
+        <p style="font-size:13.5px;color:var(--t2);margin-bottom:15px">Descarga la base de datos completa en un archivo Excel organizado por pestañas.</p>
+        <a class="btn bp" href="/api/exportar/todo" target="_blank" style="padding:10px 20px">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Generar y Descargar Excel
+        </a>
+      </div>
+    </div>
+    <div class="exp-grid">
+      <div class="exp-card" onclick="window.open('/api/exportar/empleados','_blank')"><div class="icon">👥</div><div class="name">Empleados</div><div class="desc">Personal activo y accesos</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/prestamos','_blank')"><div class="icon">⏱</div><div class="name">Préstamos</div><div class="desc">Préstamos temporales</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/bajas','_blank')"><div class="icon">🚪</div><div class="name">Bajas</div><div class="desc">Historial de personal de baja</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/inventario','_blank')"><div class="icon">🖥</div><div class="name">Inventario</div><div class="desc">Catálogo general de equipos</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/ips','_blank')"><div class="icon">🌐</div><div class="name">IPs</div><div class="desc">Estado de subredes</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/impresoras','_blank')"><div class="icon">🖨</div><div class="name">Impresoras</div><div class="desc">Impresoras y conexiones</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/camaras','_blank')"><div class="icon">📷</div><div class="name">Cámaras</div><div class="desc">Circuito cerrado</div></div>
+      <div class="exp-card" onclick="window.open('/api/exportar/red','_blank')"><div class="icon">🔌</div><div class="name">Red</div><div class="desc">Infraestructura y servidores</div></div>
+    </div>
+  </div>
+</main>
+</div>
+
+<div class="ov" id="m-alta"><div class="modal">
+  <div class="mh"><div><div class="mt">Alta de Empleado</div><div class="ms">Ingrese los datos personales y asigne sus herramientas de trabajo</div></div><button class="mc" onclick="closeM('m-alta')">✕</button></div>
+  <div class="mb">
+    <div class="fs"><div class="fst">Datos del Empleado</div>
+      <div class="fg">
+        <div class="fi s2"><label>Nombre completo *</label><input type="text" id="a-nombre" placeholder="Ej. García Mendoza, Alberto"></div>
+        <div class="fi"><label>Fecha de Alta</label><input type="date" id="a-fecha"></div>
+        <div class="fi"><label>Dirección / Subdirección</label>
+          <select id="a-dir">
+            <option value="">— Seleccionar —</option>
+            <option>Dirección General</option><option>Dirección Médica</option><option>Dirección Administrativa</option><option>Sistemas</option><option>Otra</option>
+          </select>
+        </div>
+        <div class="fi"><label>Departamento / Área</label>
+          <select id="a-area">
+            <option value="">— Seleccionar —</option>
+            <option>Almacén</option><option>Archivo</option><option>Biomédica</option><option>Caja</option>
+            <option>Calidad</option><option>Capital Humano</option><option>Cocina</option><option>Compras</option>
+            <option>Contabilidad</option><option>Dirección</option><option>Enfermería</option><option>Enlace Médico</option>
+            <option>Farmacia</option><option>Imagenología</option><option>Laboratorio</option><option>Mantenimiento</option>
+            <option>Médica</option><option>Programación de citas</option><option>Quirófano</option><option>Recepción</option>
+            <option>Recursos Humanos</option><option>Sistemas (TI)</option><option>Terapia Intensiva</option>
+            <option>Trabajo Social</option><option>Urgencias</option><option>Otra</option>
+          </select>
+        </div>
+        <div class="fi"><label>Ubicación Física</label><input type="text" id="a-ubic" placeholder="Ej. Piso 2, Ala Norte"></div>
+        <div class="fi"><label>Teléfono / Extensión</label><input type="text" id="a-tel" placeholder="Ej. Ext. 1024"></div>
+        <div class="fi s2"><label>Observaciones Adicionales</label><textarea id="a-obs" placeholder="Detalles extra sobre el empleado o la contratación..."></textarea></div>
+      </div>
+    </div>
+    <div class="fs"><div class="fst">Cuentas Institucionales <span style="font-size:10.5px;color:var(--t2);font-weight:500;text-transform:none">(Marque la casilla para asignar una cuenta)</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ck-vrtcl" onchange="togC('vrtcl',this.checked)">
+          <label class="ci-lbl">Sistema VRTCL</label>
+          <input type="text" class="ci-inp" id="ci-vrtcl" placeholder="Nombre de usuario">
+          <input type="text" class="ci-inp" id="ci-vrtcl-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ck-correo" onchange="togC('correo',this.checked)">
+          <label class="ci-lbl">Correo Inst.</label>
+          <input type="text" class="ci-inp" id="ci-correo" placeholder="usuario@hospitalescandon.org">
+          <input type="text" class="ci-inp" id="ci-correo-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ck-sap" onchange="togC('sap',this.checked)">
+          <label class="ci-lbl">SAP B1</label>
+          <input type="text" class="ci-inp" id="ci-sap" placeholder="Usuario SAP">
+          <input type="text" class="ci-inp" id="ci-sap-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ck-pos" onchange="togC('pos',this.checked)">
+          <label class="ci-lbl">POS / Caja</label>
+          <input type="text" class="ci-inp" id="ci-pos" placeholder="Usuario POS">
+          <input type="text" class="ci-inp" id="ci-pos-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ck-req" onchange="togC('req',this.checked)">
+          <label class="ci-lbl">Portal Req.</label>
+          <input type="text" class="ci-inp" id="ci-req" placeholder="Usuario Portal Requisición">
+          <input type="text" class="ci-inp" id="ci-req-pass" placeholder="Contraseña (opcional)">
+        </div>
+      </div>
+    </div>
+    <div class="fs"><div class="fst">Inventario Asignado</div>
+      <div class="eqs" id="eq-sel-list"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button class="add-eq" onclick="openSelEq('alta')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Vincular equipo existente
+        </button>
+        <button class="add-eq" onclick="openNuevoEquipoModal('alta')" style="border-color:#34d399;color:#047857;background:#ecfdf5">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Registrar equipo nuevo y vincular
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mf" style="justify-content: space-between;">
+    <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); cursor:pointer; font-weight:500">
+      <input type="checkbox" id="a-gen-word" style="width:16px;height:16px;accent-color:var(--primary);"> Descargar Resguardo (Word)
+    </label>
+    <div>
+      <button class="btn bs" onclick="closeM('m-alta')">Cancelar</button>
+      <button class="btn bp" id="btn-alta-save" onclick="guardarAlta()">Guardar Empleado</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="ov" id="m-prestamo"><div class="modal md">
+  <div class="mh"><div><div class="mt">Registrar Préstamo Temporal</div><div class="ms">Entregue equipos a un usuario por un tiempo delimitado</div></div><button class="mc" onclick="closeM('m-prestamo')">✕</button></div>
+  <div class="mb">
+    <div class="fs"><div class="fst">Datos del Solicitante</div>
+      <div class="fg">
+        <div class="fi s2"><label>Nombre del Solicitante *</label><input type="text" id="p-nombre" placeholder="Ej. Dr. Martínez / Residente Juan"></div>
+        <div class="fi"><label>Área o Departamento *</label><input type="text" id="p-area" placeholder="Ej. Quirófano 3"></div>
+        <div class="fi"><label>Fecha Esperada de Devolución *</label><input type="date" id="p-devolucion"></div>
+        <div class="fi s2"><label>Notas Generales o Motivo</label><input type="text" id="p-notas" placeholder="Ej. Préstamo para guardia nocturna..."></div>
+      </div>
+    </div>
+    <div class="fs"><div class="fst">Equipos Prestados y Condición de Entrega</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:8px">Agregue los equipos y especifique si tienen algún daño previo o si faltan accesorios.</p>
+      <div class="eqs" id="p-eq-sel-list"></div>
+      <button class="add-eq" onclick="openSelEq('prestamo')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Seleccionar equipo del almacén libre</button>
+    </div>
+  </div>
+  <div class="mf" style="justify-content: space-between;">
+    <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; cursor:pointer;"><input type="checkbox" id="p-gen-word" checked style="width:16px;height:16px;accent-color:var(--primary);"> Imprimir Carta Responsiva</label>
+    <div><button class="btn bs" onclick="closeM('m-prestamo')">Cancelar</button><button class="btn bp" id="btn-prestamo-save" onclick="guardarPrestamo()">Confirmar Préstamo</button></div>
+  </div>
+</div></div>
+
+<div class="ov" id="m-sel-eq"><div class="modal md">
+  <div class="mh"><div><div class="mt">Catálogo de Inventario Libre</div><div class="ms">Seleccione los equipos que desea agregar</div></div><button class="mc" onclick="closeM('m-sel-eq')">✕</button></div>
+  <div class="mb">
+    <div class="search-bar" style="margin-bottom:15px;width:100%"><svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Escriba para filtrar por tipo, marca o modelo..." oninput="filtSelEq(this.value)" style="width:100%"></div>
+    <div id="sel-eq-list" style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:5px"></div>
+  </div>
+</div></div>
+
+<div class="ov" id="m-hoja-servicio"><div class="modal sm">
+  <div class="mh">
+    <div>
+      <div class="mt" id="hoja-m-title">Nueva Hoja de Servicio</div>
+      <div class="ms">Suba el archivo PDF escaneado y complete los detalles</div>
+    </div>
+    <button class="mc" onclick="closeM('m-hoja-servicio')">✕</button>
+  </div>
+  <div class="mb">
+    <form id="form-hoja-servicio" onsubmit="guardarHojaServicio(event)">
+      <input type="hidden" id="hoja-id">
+      <div class="fg" style="display:flex; flex-direction:column; gap:12px;">
+        <div class="fi" id="hoja-file-group">
+          <label>Archivo PDF Escaneado *</label>
+          <input type="file" id="hoja-file" accept=".pdf">
+        </div>
+        <div class="fi">
+          <label>Nombre del Documento *</label>
+          <input type="text" id="hoja-nombre" placeholder="Ej. Servicio Preventivo Mayo 2026" required>
+        </div>
+        <div class="fi">
+          <label>Impresora *</label>
+          <select id="hoja-impresora" required>
+            <option value="">— Seleccionar Impresora —</option>
+          </select>
+        </div>
+        <div class="fi">
+          <label>Fecha de Servicio *</label>
+          <input type="date" id="hoja-fecha" required>
+        </div>
+        <div class="fi">
+          <label>Categoría *</label>
+          <select id="hoja-categoria" required>
+            <option value="">— Seleccionar Categoría —</option>
+            <option value="mantenimiento">Mantenimiento</option>
+            <option value="servicio de revision/reparacion">Servicio de revisión/reparación</option>
+          </select>
+        </div>
+        <div class="fi">
+          <label>Notas / Observaciones</label>
+          <textarea id="hoja-notas" placeholder="Ej. Cambio de rodillos, limpieza general..."></textarea>
+        </div>
+      </div>
+      <div class="mf" style="padding: 15px 0 0 0; border-top: none; background: transparent; justify-content: flex-end; gap: 10px; display: flex;">
+        <button type="button" class="btn bs" onclick="closeM('m-hoja-servicio')">Cancelar</button>
+        <button type="submit" class="btn bp" id="btn-hoja-save">Guardar Hoja</button>
+      </div>
+    </form>
+  </div>
+</div></div>
+
+<div class="ov" id="m-det-emp"><div class="modal">
+  <div class="mh"><div><div class="mt" id="det-nom"></div><div class="ms" id="det-sub" style="font-weight:500;color:var(--secondary)"></div></div><button class="mc" onclick="closeM('m-det-emp')">✕</button></div>
+  <div class="mb" id="det-body"></div>
+  <div class="mf" id="det-foot"></div>
+</div></div>
+
+<div class="ov" id="m-edit-emp"><div class="modal">
+  <div class="mh"><div><div class="mt">Editar Empleado</div><div class="ms" id="edit-emp-sub" style="font-weight:500;color:var(--secondary)"></div></div><button class="mc" onclick="closeM('m-edit-emp')">✕</button></div>
+  <div class="mb">
+    <div class="fs"><div class="fst">Datos Generales</div>
+      <div class="fg">
+        <div class="fi s2"><label>Nombre completo *</label><input type="text" id="ee-nombre"></div>
+        <div class="fi"><label>Fecha de Alta</label><input type="date" id="ee-fecha"></div>
+        <div class="fi"><label>Dirección / Subdirección</label>
+          <select id="ee-dir">
+            <option value="">— Seleccionar —</option>
+            <option>Dirección General</option><option>Dirección Médica</option><option>Dirección Administrativa</option><option>Sistemas</option><option>Otra</option>
+          </select>
+        </div>
+        <div class="fi"><label>Departamento / Área</label>
+          <select id="ee-area">
+            <option value="">— Seleccionar —</option>
+            <option>Almacén</option><option>Archivo</option><option>Biomédica</option><option>Caja</option>
+            <option>Calidad</option><option>Capital Humano</option><option>Cocina</option><option>Compras</option>
+            <option>Contabilidad</option><option>Dirección</option><option>Enfermería</option><option>Enlace Médico</option>
+            <option>Farmacia</option><option>Imagenología</option><option>Laboratorio</option><option>Mantenimiento</option>
+            <option>Médica</option><option>Programación de citas</option><option>Quirófano</option><option>Recepción</option>
+            <option>Recursos Humanos</option><option>Sistemas (TI)</option><option>Terapia Intensiva</option>
+            <option>Trabajo Social</option><option>Urgencias</option><option>Otra</option>
+          </select>
+        </div>
+        <div class="fi"><label>Ubicación Física</label><input type="text" id="ee-ubic"></div>
+        <div class="fi"><label>Teléfono / Extensión</label><input type="text" id="ee-tel"></div>
+        <div class="fi s2"><label>Observaciones Adicionales</label><textarea id="ee-obs"></textarea></div>
+      </div>
+    </div>
+    <div class="fs"><div class="fst">Cuentas Institucionales <span style="font-size:10.5px;color:var(--t2);font-weight:500;text-transform:none">(Marque la casilla para modificar o asignar)</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ee-ck-vrtcl" onchange="togCE('vrtcl',this.checked)">
+          <label class="ci-lbl">VRTCL</label>
+          <input type="text" class="ci-inp" id="ee-ci-vrtcl" placeholder="Usuario VRTCL">
+          <input type="text" class="ci-inp" id="ee-ci-vrtcl-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ee-ck-correo" onchange="togCE('correo',this.checked)">
+          <label class="ci-lbl">Correo Inst.</label>
+          <input type="text" class="ci-inp" id="ee-ci-correo" placeholder="usuario@hospitalescandon.org">
+          <input type="text" class="ci-inp" id="ee-ci-correo-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ee-ck-sap" onchange="togCE('sap',this.checked)">
+          <label class="ci-lbl">SAP B1</label>
+          <input type="text" class="ci-inp" id="ee-ci-sap" placeholder="Usuario SAP">
+          <input type="text" class="ci-inp" id="ee-ci-sap-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ee-ck-pos" onchange="togCE('pos',this.checked)">
+          <label class="ci-lbl">POS / Caja</label>
+          <input type="text" class="ci-inp" id="ee-ci-pos" placeholder="Usuario POS">
+          <input type="text" class="ci-inp" id="ee-ci-pos-pass" placeholder="Contraseña (opcional)">
+        </div>
+        <div class="ci" style="display:grid;grid-template-columns:auto 90px 1fr 1fr;gap:12px;align-items:center">
+          <input type="checkbox" id="ee-ck-req" onchange="togCE('req',this.checked)">
+          <label class="ci-lbl">Portal Req.</label>
+          <input type="text" class="ci-inp" id="ee-ci-req" placeholder="Portal Requisición">
+          <input type="text" class="ci-inp" id="ee-ci-req-pass" placeholder="Contraseña (opcional)">
+        </div>
+      </div>
+    </div>
+    <div class="fs"><div class="fst">Inventario Asignado</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:10px">Los equipos eliminados de esta lista se devolverán automáticamente al inventario general.</p>
+      <div class="eqs" id="ee-eq-list"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="add-eq" onclick="openSelEq('edit')">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Vincular equipo existente
+        </button>
+        <button class="add-eq" onclick="openNuevoEquipoModal('edit')" style="border-color:#34d399;color:#047857;background:#ecfdf5">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Registrar equipo nuevo y vincular
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mf">
+    <button class="btn bs" onclick="closeM('m-edit-emp')">Cancelar</button>
+    <button class="btn bp" id="btn-edit-emp-save" onclick="guardarEditEmpleado()">Guardar Cambios</button>
+  </div>
+</div></div>
+
+<div class="ov" id="m-baja"><div class="modal sm">
+  <div class="mh"><div><div class="mt">Ejecutar Baja de Personal</div><div class="ms" id="baja-sub"></div></div><button class="mc" onclick="closeM('m-baja')">✕</button></div>
+  <div class="mb">
+    <p style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px;background:var(--red-bg);padding:12px;border-radius:8px;border:1px solid #fecaca"><strong>Aviso:</strong> Se registrará la baja definitiva de <strong id="baja-nom" style="color:var(--red2)"></strong>. Todos los equipos que tenga asignados actualmente regresarán al inventario de forma automática.</p>
+    <div class="fi" style="margin-bottom:12px"><label>Fecha oficial de baja</label><input type="date" id="baja-fecha"></div>
+    <div class="fi"><label>Motivo de la baja (Opcional)</label><input type="text" id="baja-motivo" placeholder="Ej. Renuncia voluntaria, Fin de contrato..."></div>
+  </div>
+  <div class="mf" style="justify-content: space-between;">
+    <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; cursor:pointer;">
+      <input type="checkbox" id="b-gen-word" style="width:16px;height:16px;accent-color:var(--primary);"> Imprimir Carta de Devolución
+    </label>
+    <div>
+      <button class="btn bs" onclick="closeM('m-baja')">Cancelar</button>
+      <button class="btn bd" id="btn-baja-conf" onclick="confirmarBaja()">Ejecutar Baja</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="ov" id="m-inv"><div class="modal">
+  <div class="mh"><div><div class="mt" id="inv-m-title">Agregar Equipo al Inventario</div></div><button class="mc" onclick="closeM('m-inv')">✕</button></div>
+  <div class="mb">
+    <div class="fs"><div class="fst">Identificación Principal</div>
+      <div class="fg">
+        <div class="fi"><label>Tipo de Dispositivo *</label>
+          <select id="inv-tipo" onchange="onInvTipoConCat()">
+            <option value="">— Seleccione el tipo —</option>
+            <option>PC</option><option>Laptop</option><option>Monitor</option><option>Mouse</option><option>Teclado</option>
+            <option>Impresora de Tinta</option><option>Impresora de Cartucho</option><option>Impresora de Tóner</option>
+            <option>Impresora Térmica</option><option>Impresora de etiquetas</option>
+            <option>Teléfono IP</option><option>Teléfono Conmutador</option><option>Celular</option>
+            <option>Audífonos Diadema</option><option>Adaptador RED-USB</option><option>Lector de código de barras</option>
+            <option>Memoria USB</option><option>No Break</option><option>Radio</option><option>Cargador</option>
+            <option>Smart TV</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="fi"><label>Marca Comercial</label><input type="text" id="inv-marca" list="dl-marcas" placeholder="Ej. Lenovo, HP, Dell..."></div>
+        <div class="fi s2"><label>Modelo Exacto / Descripción Breve</label><input type="text" id="inv-modelo" placeholder="Ej. ThinkBook 13s G2"></div>
+        <div class="fi"><label>Número de Serie (S/N)</label><input type="text" id="inv-ns" placeholder="Código de barras o S/N"></div>
+        <div class="fi" id="inv-ip-grp"><label>Dirección IP Asignada</label>
+          <input type="text" id="inv-ip-sel" list="dl-ips-libres" placeholder="Escriba IP o últimos dígitos...">
+        </div>
+        <div class="fi"><label>Cantidad Ingresada</label><input type="number" id="inv-cant" value="1" min="1"></div>
+        <div class="fi s2" id="inv-grp-tel" style="display:none"><label>Número Telefónico (Si aplica)</label><input type="text" id="inv-tel" placeholder="Ej. 55-XXXX-XXXX"></div>
+        <div class="fi s2"><label>Notas / Estado Físico</label><input type="text" id="inv-notas" placeholder="Ej. Presenta rayón en pantalla, batería nueva..."></div>
+      </div>
+    </div>
+    <div class="fs" id="inv-specs-grp" style="display:none"><div class="fst">Especificaciones Técnicas Internas</div>
+      <div class="fg3">
+        <div class="fi"><label>Procesador (CPU)</label><input type="text" id="inv-cpu" list="dl-cpu" placeholder="Ej. Intel Core i5"></div>
+        <div class="fi"><label>Memoria RAM</label>
+          <select id="inv-ram"><option value="">— Seleccionar —</option><option>2 GB</option><option>4 GB</option><option>8 GB</option><option>16 GB</option><option>32 GB</option><option>64 GB</option></select>
+        </div>
+        <div class="fi"><label>Disco de Almacenamiento</label>
+          <select id="inv-storage"><option value="">— Seleccionar —</option><option>128 GB SSD</option><option>256 GB SSD</option><option>512 GB SSD</option><option>1 TB SSD</option><option>500 GB HDD</option><option>1 TB HDD</option><option>2 TB HDD</option></select>
+        </div>
+        <div class="fi"><label>Sistema Operativo</label>
+          <select id="inv-winlic"><option value="">— Seleccionar —</option><option>Windows 10 Home</option><option>Windows 10 Pro</option><option>Windows 11 Home</option><option>Windows 11 Pro</option><option>Windows Server</option><option>Sin activar / Genérico</option><option>Otra</option></select>
+        </div>
+        <div class="fi"><label>Paquetería Office</label>
+          <select id="inv-office"><option value="">— Seleccionar —</option><option>Microsoft 365 Personal</option><option>Microsoft 365 Business</option><option>Office 2007</option><option>Office 2010</option><option>Office 2013</option><option>Office 2016</option><option>Office 2019</option><option>Office 2021</option><option>Office 2024</option><option>LibreOffice</option></select>
+        </div>
+        <div class="fi"><label>Contraseña de Acceso local</label><input type="text" id="inv-pass" placeholder="Password de la PC"></div>
+        <div class="fi"><label>Categoría Interna</label><input type="text" id="inv-cat" readonly style="background:var(--s2);color:var(--t2);font-weight:500;border:1px dashed var(--border)" placeholder="Auto-asignada por el sistema"></div>
+      </div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeM('m-inv')">Cancelar</button><button class="btn bp" id="btn-inv-save" onclick="guardarInv()">Guardar Registro</button></div>
+</div></div>
+
+<div class="ov" id="m-imp"><div class="modal">
+  <div class="mh"><div><div class="mt" id="imp-m-title">Ficha de Impresora</div></div><button class="mc" onclick="closeM('m-imp')">✕</button></div>
+  <div class="mb">
+    <div class="fs"><div class="fst">Datos del Equipo</div>
+      <div class="fg">
+        <div class="fi s2"><label>Nombre Lógico / Identificador</label><input type="text" id="imp-nom" placeholder="Ej. Impresora Urgencias 1"></div>
+        <div class="fi"><label>Marca</label><input type="text" id="imp-marca" list="dl-marcas" placeholder="Ej. HP, Brother..."></div>
+        <div class="fi"><label>Modelo Exacto</label><input type="text" id="imp-modelo" placeholder="Ej. LaserJet Pro M404n"></div>
+        <div class="fi"><label>Tecnología de Impresión *</label>
+          <select id="imp-tipo"><option value="">— Seleccione —</option><option>Tinta</option><option>Cartucho</option><option>Continua</option><option>Tóner</option><option>Térmico</option></select>
+        </div>
+        <div class="fi"><label>Modelo del Consumible</label><input type="text" id="imp-cons" placeholder="Ej. Tóner TN-2370, HP 664"></div>
+        <div class="fi"><label>Ubicación Física *</label><input type="text" id="imp-ubic" placeholder="Ej. Piso 2, Nurse Station"></div>
+        <div class="fi"><label>IP Configurada (Opcional)</label><input type="text" id="imp-ip" list="dl-ips-libres" placeholder="Buscar IP en red..."></div>
+        <div class="fi"><label>Estado Operativo</label>
+          <select id="imp-estado"><option value="activa">Operando / Activa</option><option value="mantenimiento">Falla / En Mantenimiento</option><option value="baja">Dada de Baja</option></select>
+        </div>
+        <div class="fi s2"><label>Observaciones Adicionales</label><input type="text" id="imp-notas"></div>
+      </div>
+    </div>
+    <div class="fs"><div class="fst">Red de Equipos Conectados a esta Impresora</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:10px">Gestione qué computadoras del inventario tienen permisos o conexión directa a este equipo.</p>
+      <div id="imp-eq-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+      <button class="add-eq" onclick="openSelImpEq()">+ Buscar y vincular equipo a esta impresora</button>
+    </div>
+    <div class="fs" id="imp-hojas-container" style="display: none; margin-top: 15px;">
+      <div class="fst">Hojas de Servicio / Mantenimiento de la Impresora</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:10px">Hojas de servicio y revisiones técnicas cargadas para este equipo.</p>
+      <div id="imp-hojas-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+      <button class="add-eq" onclick="openMNuevaHoja(null, curEditId.imp)">+ Subir Nueva Hoja de Servicio</button>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeM('m-imp')">Cancelar</button><button class="btn bp" id="btn-imp-save" onclick="guardarImp()">Guardar Configuración</button></div>
+</div></div>
+
+<div class="ov" id="m-cam"><div class="modal sm">
+  <div class="mh"><div><div class="mt" id="cam-m-title">Ficha de Cámara (CCTV)</div></div><button class="mc" onclick="closeM('m-cam')">✕</button></div>
+  <div class="mb">
+    <div class="fg">
+      <div class="fi s2"><label>Área o Departamento *</label><input type="text" id="cam-area" placeholder="Ej. Urgencias, Almacén, Exterior"></div>
+      <div class="fi s2"><label>Ubicación Exacta *</label><input type="text" id="cam-ubic" placeholder="Ej. Pasillo norte, Techo entrada"></div>
+      <div class="fi"><label>Marca</label><input type="text" id="cam-marca" list="dl-marcas" placeholder="Ej. Hikvision, Dahua"></div>
+      <div class="fi"><label>Modelo</label><input type="text" id="cam-modelo"></div>
+      <div class="fi s2"><label>Dirección IP</label><input type="text" id="cam-ip" list="dl-ips-libres" placeholder="Asigne una IP estática si aplica..."></div>
+      <div class="fi"><label>Estado Operativo</label>
+        <select id="cam-estado"><option value="activa">Operando / Activa</option><option value="falla">Punto Ciego / Con falla</option><option value="baja">Dada de baja</option></select>
+      </div>
+      <div class="fi s2"><label>Observaciones</label><input type="text" id="cam-notas"></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeM('m-cam')">Cancelar</button><button class="btn bp" id="btn-cam-save" onclick="guardarCam()">Guardar Registro</button></div>
+</div></div>
+
+<div class="ov" id="m-red"><div class="modal">
+  <div class="mh"><div><div class="mt" id="red-m-title">Infraestructura de Red</div></div><button class="mc" onclick="closeM('m-red')">✕</button></div>
+  <div class="mb">
+    <div class="fg">
+      <div class="fi"><label>Categoría del Equipo *</label>
+        <select id="red-tipo">
+          <option value="">— Seleccione —</option>
+          <option>Servidor</option><option>Switch</option><option>Router</option><option>Access Point</option>
+          <option>Patch Panel</option><option>Rack</option><option>UPS</option><option>Firewall</option><option>KVM</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="fi"><label>Nombre Lógico</label><input type="text" id="red-nom" placeholder="Ej. SW-Piso2-01"></div>
+      <div class="fi"><label>Marca</label><input type="text" id="red-marca" list="dl-marcas" placeholder="Ej. Cisco, Ubiquiti..."></div>
+      <div class="fi"><label>Modelo</label><input type="text" id="red-modelo"></div>
+      <div class="fi"><label>Número de Serie</label><input type="text" id="red-ns"></div>
+      <div class="fi"><label>IP de Administración</label><input type="text" id="red-ip" list="dl-ips-libres" placeholder="Buscar IP libre..."></div>
+      <div class="fi"><label>Ubicación Física</label><input type="text" id="red-ubic" placeholder="Ej. Site Principal, Rack 2"></div>
+      <div class="fi"><label>Cantidad de Puertos</label><input type="number" id="red-puertos" placeholder="Ej. 24, 48 (Si aplica)"></div>
+      <div class="fi"><label>Estado</label>
+        <select id="red-estado"><option value="activo">En línea / Activo</option><option value="mantenimiento">Fuera de servicio</option><option value="baja">Desechado</option></select>
+      </div>
+      <div class="fi s2"><label>Notas Adicionales</label><input type="text" id="red-notas"></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeM('m-red')">Cancelar</button><button class="btn bp" id="btn-red-save" onclick="guardarRed()">Guardar Equipo</button></div>
+</div></div>
+
+<div class="ov" id="m-ip"><div class="modal sm">
+  <div class="mh"><div><div class="mt" id="ip-m-title">Control de Dirección IP</div></div><button class="mc" onclick="closeM('m-ip')">✕</button></div>
+  <div class="mb">
+    <div class="fg">
+      <div class="fi s2"><label>Dirección IP</label><input type="text" id="ip-addr" readonly style="background:var(--s2);color:var(--primary);font-weight:600;font-family:monospace;font-size:16px;letter-spacing:0.05em"></div>
+      <div class="fi s2"><label>Estado Lógico</label>
+        <select id="ip-estado"><option value="libre">Libre (Disponible en DHCP)</option><option value="asignada">Asignada / En uso</option><option value="reservada">Reservada estáticamente (No usar)</option></select>
+      </div>
+      <div class="fi"><label>Tipo de Dispositivo vinculado</label><input type="text" id="ip-tipo-disp" placeholder="Ej. PC, Impresora, Servidor..."></div>
+      <div class="fi s2"><label>Usuario / Entidad Asignada</label><input type="text" id="ip-asig" placeholder="Ej. Dr. Martínez, Caja 3..."></div>
+      <div class="fi s2"><label>Anotaciones Red</label><input type="text" id="ip-notas" placeholder="Puerta de enlace especial, Vlan, etc."></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeM('m-ip')">Cancelar</button><button class="btn bp" onclick="guardarIP()">Aplicar Cambios</button></div>
+</div></div>
+
+<div class="ov" id="m-nuevo-eq"><div class="modal md">
+  <div class="mh">
+    <div><div class="mt">Ingreso Directo a Empleado</div><div class="ms">Este equipo se agregará al inventario global y quedará pre-asignado a este usuario.</div></div>
+    <button class="mc" onclick="closeM('m-nuevo-eq')">✕</button>
+  </div>
+  <div class="mb">
+    <div class="fs"><div class="fst">Ficha del Dispositivo</div>
+      <div class="fg">
+        <div class="fi"><label>Tipo *</label>
+          <select id="neq-tipo" onchange="onNEQTipo()">
+            <option value="">— Seleccionar —</option>
+            <option>PC</option><option>Laptop</option><option>Monitor</option>
+            <option>Mouse</option><option>Teclado</option>
+            <option>Impresora de Tinta</option><option>Impresora de Cartucho</option><option>Impresora de Tóner</option>
+            <option>Impresora Térmica</option><option>Impresora de etiquetas</option>
+            <option>Teléfono IP</option><option>Teléfono Conmutador</option><option>Celular</option>
+            <option>Audífonos Diadema</option><option>Adaptador RED-USB</option><option>Lector de código de barras</option>
+            <option>Memoria USB</option><option>No Break</option><option>Radio</option><option>Cargador</option>
+            <option>Smart TV</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="fi"><label>Marca</label><input type="text" id="neq-marca" list="dl-marcas"></div>
+        <div class="fi s2"><label>Modelo / Descripción</label><input type="text" id="neq-modelo"></div>
+        <div class="fi"><label>No. Serie / Etiqueta</label><input type="text" id="neq-ns"></div>
+        <div class="fi"><label>Unidades Ingresadas</label><input type="number" id="neq-cant" value="1" min="1"></div>
+        <div class="fi s2" id="neq-ip-grp" style="display:none"><label>Vincular IP</label><input type="text" id="neq-ip-sel" list="dl-ips-libres" placeholder="Buscar IP libre..."></div>
+        <div class="fi s2" id="neq-grp-tel" style="display:none"><label>Línea Celular (Si aplica)</label><input type="text" id="neq-tel" placeholder="Ej. 55-XXXX-XXXX"></div>
+        <div class="fi s2"><label>Notas y Estado Físico</label><input type="text" id="neq-notas"></div>
+      </div>
+    </div>
+    <div class="fs" id="neq-specs-grp" style="display:none">
+      <div class="fst">Hardware y Software Interno</div>
+      <div class="fg3">
+        <div class="fi"><label>CPU</label><input type="text" id="neq-cpu" list="dl-cpu"></div>
+        <div class="fi"><label>RAM</label>
+          <select id="neq-ram"><option value="">— RAM —</option><option>2 GB</option><option>4 GB</option><option>8 GB</option><option>16 GB</option><option>32 GB</option><option>64 GB</option></select>
+        </div>
+        <div class="fi"><label>Disco</label>
+          <select id="neq-storage"><option value="">— Disco —</option><option>128 GB SSD</option><option>256 GB SSD</option><option>512 GB SSD</option><option>1 TB SSD</option><option>500 GB HDD</option><option>1 TB HDD</option><option>2 TB HDD</option></select>
+        </div>
+        <div class="fi"><label>Windows</label>
+          <select id="neq-winlic"><option value="">— OS —</option><option>Windows 10 Home</option><option>Windows 10 Pro</option><option>Windows 11 Home</option><option>Windows 11 Pro</option><option>Windows Server</option><option>Sin activar</option><option>Otra</option></select>
+        </div>
+        <div class="fi"><label>Office</label>
+          <select id="neq-office"><option value="">— Office —</option><option>Microsoft 365 Personal</option><option>Microsoft 365 Business</option><option>Office 2016</option><option>Office 2019</option><option>Office 2021</option><option>Office 2024</option><option>LibreOffice</option></select>
+        </div>
+        <div class="fi"><label>Contraseña Local</label><input type="text" id="neq-pass" placeholder="Password Local"></div>
+      </div>
+    </div>
+    <div id="neq-preview" style="display:none;background:var(--green-bg);border:1px solid #b5e4cc;border-radius:8px;padding:11px 14px;font-size:12.5px;color:var(--green)">
+      ✓ Este equipo se registrará en inventario y quedará asignado al instante.
+    </div>
+  </div>
+  <div class="mf">
+    <button class="btn bs" onclick="closeM('m-nuevo-eq')">Cancelar</button>
+    <button class="btn bg-btn" id="btn-nuevo-eq" onclick="confirmarNuevoEquipo()">Confirmar y Asignar</button>
+  </div>
+</div></div>
+
+<div class="ov" id="m-arch"><div class="modal sm">
+  <div class="mh"><div><div class="mt" id="arch-title">Digitalizar Resguardo</div><div class="ms" id="arch-sub" style="font-weight:500;color:var(--secondary)"></div></div><button class="mc" onclick="closeM('m-arch')">✕</button></div>
+  <div class="mb">
+    <p style="font-size:13px;color:var(--t2);margin-bottom:15px">Una vez que el usuario firme el documento físico generado, escanéelo o tómele una fotografía clara y súbalo al sistema como respaldo legal.</p>
+    <label class="ful"><svg width="28" height="28" fill="none" stroke="var(--primary)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <p>Haga clic para buscar el archivo en su computadora</p>
+      <div class="ful-ok" id="arch-fn" style="display:none"></div>
+      <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" id="arch-inp" onchange="onArch(event)">
+    </label>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeM('m-arch')">Hacerlo más tarde</button><button class="btn bp" id="btn-arch-save" onclick="saveArch()" disabled>Subir al Servidor</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<div id="print-area" style="display:none; padding:30px; font-family:'DM Sans', sans-serif; text-align:center;">
+  <div style="font-size:16px; font-weight:700; margin-bottom:10px; color:#004687;">HOSPITAL ESCANDÓN</div>
+  <svg id="barcode"></svg>
+  <div id="print-desc" style="font-size:14px; font-weight:600; margin-top:10px; color:#333;"></div>
+  <div style="font-size:10px; color:#666; margin-top:5px;">SISTEMA DE CONTROL DE ACTIVOS</div>
+</div>
+
+<script>
+// ═══ ESTADO GLOBAL ═══
+let allEmp=[], allBajas=[], allInv=[], allIPs=[], allImp=[], allCam=[], allRed=[], allPrestamos=[];
+let invLibres=[];
+let eqSel=[], impEqSel=[], prestamoEqSel=[]; 
+let curBajaId=null, curDetId=null;
+let curEditId={inv:null, imp:null, cam:null, red:null, ip:null};
+let archCtx={tipo:null, id:null, file:null};
+
+const today = () => new Date().toISOString().slice(0, 10);
+const fmtF = (d) => {
+    if(!d) return '—';
+    try { const [y, m, dd] = d.split('-'); return `${dd}/${m}/${y}`; } 
+    catch { return d; }
+};
+
+const toast = (m, t='') => {
+    const el = document.getElementById('toast');
+    el.textContent = m; el.className = 'toast ' + t + ' show';
+    setTimeout(() => el.className = 'toast', 3500);
+};
+
+const closeM = id => document.getElementById(id).classList.remove('open');
+
+const api = async (url, opciones={}) => {
+  try {
+    const r = await fetch(url, { headers: {'Content-Type': 'application/json'}, ...opciones });
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error || 'Fallo interno en el servidor');
+    return d;
+  } catch(e) { console.error(e); return { error: e.message }; }
+};
+
+const CL = { vrtcl:'VRTCL', correo:'Correo', sap:'SAP', pos:'POS', req:'Requisición' };
+
+function getIpIdFromStr(val) {
+  if(!val) return null;
+  const opt = [...document.querySelectorAll('#dl-ips-libres option')].find(o => o.value === val);
+  return opt ? opt.getAttribute('data-id') : null;
+}
+
+const PAGES = {
+  dashboard: '📊 Panel de Control General',
+  empleados: '👥 Gestión de Personal Activo',
+  prestamos: '⏱ Préstamos Temporales',
+  bajas: '🚪 Historial de Personal de Baja',
+  inventario: '🖥 Catálogo General de Inventario',
+  impresoras: '🖨 Central de Impresión',
+  servicios: '🛠 Hojas de Servicio de Impresoras',
+  camaras: '📷 Circuito Cerrado (CCTV)',
+  red: '🔌 Nodos y Equipos de Red',
+  ips: '🌐 Panel de Direccionamiento IP',
+  exportar: '📥 Centro de Reportes (Excel)'
+};
+
+const PAGE_BTNS = {
+  empleados: `<button class="btn bp" onclick="openMAlta()">+ Alta de Personal</button>`,
+  prestamos: `<button class="btn bp" onclick="openMPrestamo()">+ Registrar Préstamo</button>`,
+  inventario: `<button class="btn bp" onclick="openMInv()">+ Nuevo Ingreso al Inventario</button>`,
+  impresoras: `<button class="btn bp" onclick="openMImp()">+ Alta de Impresora</button>`,
+  servicios: `<button class="btn bp" onclick="openMNuevaHoja()">+ Subir Hoja de Servicio</button>`,
+  camaras: `<button class="btn bp" onclick="openMCam()">+ Alta de Cámara</button>`,
+  red: `<button class="btn bp" onclick="openMRed()">+ Alta de Equipo de Red</button>`,
+};
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const navBtns = [...document.querySelectorAll('.ni')];
+  const idx = Object.keys(PAGES).indexOf(p);
+  if(navBtns[idx]) navBtns[idx].classList.add('active');
+  document.getElementById('page-title').textContent = PAGES[p] || p;
+  document.getElementById('topbar-btn').innerHTML = PAGE_BTNS[p] || '';
+  
+  const loaders = {
+      dashboard: loadDash, empleados: loadEmp, prestamos: loadPrestamos, bajas: loadBajas, 
+      inventario: loadInv, impresoras: loadImp, servicios: loadServicios, camaras: loadCam, red: loadRed, ips: loadIPs
+  };
+  if(loaders[p]) loaders[p]();
+}
+
+// ═══ DASHBOARD ═══
+async function loadDash(){
+  const s = await api('/api/stats');
+  if(s.error) return; 
+  const emps = await api('/api/empleados');
+  const invItems = await api('/api/inventario');
+  const ipsData = await api('/api/ips');
+
+  let equiposMejora = [];
+  invItems.forEach(i => {
+    if(i.tipo === 'PC' || i.tipo === 'Laptop') {
+      let mejoras = [];
+      if (i.ram) {
+         let r = parseInt(i.ram);
+         if (r && r <= 4) mejoras.push('RAM (Baja)');
+      }
+      if (i.almacenamiento && i.almacenamiento.includes('HDD')) mejoras.push('Cambio a SSD');
+      if (i.version_office && i.version_office.match(/2007|2010|2013|2016|2019/)) mejoras.push('Actualizar Office');
+      if (mejoras.length > 0) {
+         equiposMejora.push({...i, mejoras_str: mejoras.join(', ')});
+      }
+    }
+  });
+
+  const stats = [
+    { l: 'Personal Activo', v: s.activos, c: 'g' },
+    { l: 'Préstamos Vigentes', v: s.prestamos_activos || 0, c: 'y' },
+    { l: 'Equipos en Almacén', v: s.inv_sin_asig, c: 'y' },
+    { l: 'Direcciones IP Libres', v: s.ips_libre, c: 'g' },
+    { l: 'Direcciones IP Ocupadas', v: s.ips_asig, c: 'b' },
+    { l: 'Conflictos Red (Duplicadas)', v: s.ips_dup, c: s.ips_dup > 0 ? 'r' : 'g' },
+    { l: 'Impresoras Operando', v: s.imp_tot, c: 'b' },
+    { l: 'Plan Mejora Tecnológica', v: equiposMejora.length, c: equiposMejora.length > 0 ? 'r' : 'g' },
+    { l: 'Cámaras Operando', v: s.cam_tot, c: 'p' },
+    { l: 'Cámaras Fuera de Red', v: s.cam_sin_ip, c: s.cam_sin_ip > 0 ? 'y' : 'g' },
+    { l: 'Nodos de Red', v: s.red_tot, c: 'b' },
+    { l: 'Histórico de Bajas', v: s.bajas, c: 'r' },
+  ];
+  
+  document.getElementById('dash-stats').innerHTML = stats.map(x => 
+      `<div class="stat"><div class="stat-l">${x.l}</div><div class="stat-v ${x.c}">${x.v}</div></div>`
+  ).join('');
+
+  let alertas = '';
+  if(s.ips_dup > 0) alertas += `<div class="alert-banner">⚠ Se han detectado ${s.ips_dup} conflictos de direcciones IP duplicadas en la red de datos. Por favor, revise el panel de IPs.</div>`;
+  if(equiposMejora.length > 0) alertas += `<div class="alert-banner yellow">⚠ Existen ${equiposMejora.length} equipos que han alcanzado la obsolescencia y requieren mejoras urgentes de Hardware/Software.</div>`;
+  document.getElementById('alertas-container').innerHTML = alertas;
+
+  document.getElementById('dash-emp').innerHTML = emps.slice(0, 5).map(e => 
+      `<tr><td class="link" onclick="showPage('empleados');setTimeout(()=>verDetalle('${e.id}'),400)">${e.nombre}</td>
+      <td style="color:var(--t2);font-size:12.5px">${e.area || '—'}</td>
+      <td style="font-size:11.5px;color:var(--primary);font-weight:600">${fmtF(e.fecha_alta)}</td></tr>`
+  ).join('') || `<tr><td colspan="3" style="text-align:center;color:var(--t2)">Sin empleados recientes</td></tr>`;
+
+  const sinAsig = invItems.filter(i => i.cantidad_libre > 0);
+  document.getElementById('dash-inv').innerHTML = sinAsig.slice(0, 5).map(i => 
+      `<tr><td><span class="badge cb">${i.tipo}</span></td>
+      <td style="font-weight:500;color:var(--primary)">${i.marca || ''} ${i.modelo || ''}</td>
+      <td style="font-weight:600;color:${i.cantidad_libre === 0 ? 'var(--red)' : 'var(--green)'}">${i.cantidad_libre} libres</td></tr>`
+  ).join('') || `<tr><td colspan="3" style="text-align:center;color:var(--t2)">Inventario agotado</td></tr>`;
+
+  const asigPrev = ipsData.filter(i => i.estado === 'asignada').slice(0, 5);
+  document.getElementById('dash-ips').innerHTML = asigPrev.map(i => 
+      `<tr><td style="font-weight:600;font-family:monospace;letter-spacing:0.05em;color:var(--primary)">${i.direccion}</td>
+      <td style="font-size:12.5px">${i.asignada_a || '—'}</td>
+      <td><span class="badge cgr">${i.tipo_disp || '—'}</span></td></tr>`
+  ).join('') || `<tr><td colspan="3" style="text-align:center;color:var(--t2)">Sin IPs asignadas</td></tr>`;
+
+  document.getElementById('dash-obsoletos').innerHTML = equiposMejora.length ? 
+    equiposMejora.map(i => {
+       const asig = (i.asignados_a && i.asignados_a.length > 0) ? i.asignados_a[0].nombre : 'En almacén / Sin asignar';
+       return `<tr style="cursor:pointer; transition:background 0.2s" onclick="showPage('inventario'); editInv('${i.id}')">
+         <td><div style="font-weight:600" class="link">${i.marca || ''} ${i.modelo || ''}</div>
+             <div style="font-size:11px;color:var(--t2);margin-top:2px">S/N: ${i.num_serie || '—'}</div></td>
+         <td style="font-size:12.5px;color:var(--text)">${asig}</td>
+         <td><span class="badge cr" style="background:#fee2e2;border:1px solid #fca5a5">${i.mejoras_str}</span></td>
+       </tr>`;
+    }).join('') : `<tr><td colspan="3" style="text-align:center;color:var(--green);padding:20px;font-weight:500">✓ Todos los equipos están actualizados</td></tr>`;
+}
+
+// ═══ EMPLEADOS ═══
+async function loadEmp(){
+    allEmp = await api('/api/empleados');
+    renderEmp(allEmp);
+}
+
+function renderEmp(lista){
+  const tb = document.getElementById('t-empleados');
+  if(!lista.length){
+      tb.innerHTML=`<tr><td colspan="6"><div class="emp"><p>No hay personal registrado actualmente en esta área.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(e => {
+    const eqs = e.equipos || [];
+    const eqB = eqs.length ? `<span class="badge cb" style="cursor:pointer;background:var(--primary);color:white;box-shadow:var(--shadow-sm)" onclick="verDetalle('${e.id}')">${eqs.length} equipo${eqs.length > 1 ? 's' : ''}</span>` : '<span style="font-size:11.5px;color:var(--t2)">Sin equipos</span>';
+    const ctas = Object.keys(e.cuentas || {}).filter(k => e.cuentas[k]).map(k => `<span class="badge cgr" style="border:1px solid var(--border)">${CL[k] || k}</span>`).join(' ') || '<span style="font-size:11.5px;color:var(--t2)">—</span>';
+    
+    return `<tr>
+        <td><div class="link" onclick="verDetalle('${e.id}')" style="font-size:13.5px">${e.nombre}</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:2px">${e.ubicacion || 'Sin ubicación física'}</div></td>
+        <td><div style="font-weight:500;color:var(--primary);font-size:12.5px">${e.area || '—'}</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:2px">${e.direccion || '—'}</div></td>
+        <td>${eqB}</td>
+        <td><div class="chips">${ctas}</div></td>
+        <td style="font-size:12px;color:var(--t2);font-weight:500">${fmtF(e.fecha_alta)}</td>
+        <td><div class="actions">
+            <button class="btn bs btn-sm" onclick="verDetalle('${e.id}')">Expediente</button>
+            <button class="btn bs btn-sm" style="color:var(--secondary)" onclick="editarEmpleado('${e.id}')">Editar</button>
+            <button class="btn bd btn-sm" onclick="openMBaja('${e.id}')">Baja</button>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtEmp(v){
+    const f = v.toLowerCase();
+    renderEmp(allEmp.filter(e => e.nombre.toLowerCase().includes(f) || (e.area || '').toLowerCase().includes(f)));
+}
+
+async function verDetalle(id){
+  curDetId = id;
+  const e = await api(`/api/empleados/${id}`);
+  document.getElementById('det-nom').textContent = e.nombre;
+  document.getElementById('det-sub').textContent = [e.area, e.direccion].filter(Boolean).join(' · ') || 'Falta asignación de área';
+  
+  const cMap = { vrtcl:'VRTCL', correo:'Correo Institucional', sap:'SAP Business One', pos:'Caja (POS)', req:'Portal Requisiciones' };
+  const cuentas = e.cuentas || {};
+  const cH = Object.entries(cuentas)
+    .filter(([k,v]) => v && !k.endsWith('_pass'))
+    .map(([k,v]) => {
+      const pass = cuentas[k+'_pass'];
+      return `<div class="fi"><div class="dl">${cMap[k] || k}</div>
+        <div class="dv" style="display:flex;align-items:center;gap:10px">
+          <span style="font-weight:600;color:var(--primary)">${v}</span>
+          ${pass ? `<span style="font-size:11.5px;color:var(--secondary);background:var(--secondary-light);border:1px solid #bae6fd;border-radius:6px;padding:2px 8px;cursor:help;font-family:monospace" title="Contraseña del sistema">🔑 ${pass}</span>` : ''}
+        </div></div>`;
+    }).join('') || '<div style="color:var(--t2);font-size:12px;font-style:italic">El usuario no tiene accesos institucionales asignados.</div>';
+  
+  const eqs = e.equipos || [];
+  const eH = eqs.length ? eqs.map(eq => {
+      let d = `<strong style="color:var(--primary)">${eq.tipo}</strong> ${eq.marca || ''} ${eq.modelo || ''}`.trim();
+      if(eq.procesador) d += ` <span style="color:#cbd5e1">|</span> CPU: ${eq.procesador}`;
+      if(eq.ram) d += ` <span style="color:#cbd5e1">|</span> RAM: ${eq.ram}`;
+      if(eq.num_serie) d += ` <span style="color:#cbd5e1">|</span> S/N: ${eq.num_serie}`;
+      if(eq.ip_asignada) d += ` <span style="color:#cbd5e1">|</span> IP: ${eq.ip_asignada}`;
+      if(eq.numero_tel) d += ` <span style="color:#cbd5e1">|</span> Tel: ${eq.numero_tel}`;
+      if(eq.contrasena) d += ` <span style="color:#cbd5e1">|</span> <span title="Contraseña local del equipo: ${eq.contrasena}">🔑</span>`;
+      return `<div class="eq-tag" style="display:block; margin-bottom:6px; padding:10px; background:#f8fafc" onclick="closeM('m-det-emp'); showPage('inventario'); editInv('${eq.inv_id}')">
+          <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
+            <span>${d}</span>
+            <span class="badge cb" style="margin-left:10px">×${eq.cantidad}</span>
+          </div>
+      </div>`;
+  }).join('') : '<span style="color:var(--t2);font-size:12px;font-style:italic">El usuario no tiene activos fijos resguardados a su nombre.</span>';
+  
+  const archH = e.archivo_alta 
+      ? `<a class="btn bs btn-sm" style="color:var(--primary);border-color:var(--primary)" href="/api/archivo/${e.archivo_alta}" target="_blank">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Ver Documento de Resguardo Escaneado
+         </a>`
+      : '<div style="color:var(--red2);font-size:11.5px;font-weight:600;background:var(--red-bg);padding:8px 12px;border-radius:6px;display:inline-block;border:1px solid #fecaca">⚠ Falta documento legal escaneado</div>';
+  
+  document.getElementById('det-body').innerHTML = `
+      <div class="dg" style="margin-bottom:20px;background:#f8fafc;padding:15px;border-radius:10px;border:1px solid var(--border)">
+          <div class="fi"><div class="dl">Fecha Registro</div><div class="dv" style="font-weight:600">${fmtF(e.fecha_alta)}</div></div>
+          <div class="fi"><div class="dl">Ubicación Física</div><div class="dv">${e.ubicacion || '—'}</div></div>
+          <div class="fi"><div class="dl">Teléfono / Ext.</div><div class="dv">${e.telefono || '—'}</div></div>
+          <div class="fi"><div class="dl">Dirección Administrativa</div><div class="dv">${e.direccion || '—'}</div></div>
+      </div>
+      <div style="margin-bottom:20px">
+          <div class="fst">Cuentas Institucionales Activas</div>
+          <div class="dg">${cH}</div>
+      </div>
+      <div style="margin-bottom:20px">
+          <div class="fst">Inventario Responsable del Usuario</div>
+          <div>${eH}</div>
+      </div>
+      ${e.observaciones ? `<div style="margin-bottom:20px"><div class="fst">Observaciones del Perfil</div><div style="font-size:13px;color:var(--text);line-height:1.5;background:#fffbeb;padding:12px;border-radius:8px;border:1px solid #fde68a">${e.observaciones}</div></div>` : ''}
+      <div>
+          <div class="fst">Respaldo Legal</div>
+          ${archH}
+      </div>`;
+      
+  document.getElementById('det-foot').innerHTML = `
+      <button class="btn bs" onclick="closeM('m-det-emp')">Cerrar Expediente</button>
+      <a class="btn bs" style="color:var(--primary);border-color:var(--primary)" href="/api/docx/alta/${e.id}" target="_blank">📄 Descargar Carta (.docx)</a>
+      <label class="btn bp" style="cursor:pointer">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Subir Carta Firmada
+          <input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="subDir(event,'${e.id}','alta')">
+      </label>`;
+      
+  document.getElementById('m-det-emp').classList.add('open');
+}
+
+// ═══ ALTA DE EMPLEADOS ═══
+function openMAlta(){
+  ['a-nombre','a-dir','a-area','a-ubic','a-tel','a-obs'].forEach(i => document.getElementById(i).value='');
+  document.getElementById('a-fecha').value = today();
+  ['vrtcl','correo','sap','pos','req'].forEach(k => {
+    const ck = document.getElementById('ck-'+k); if (ck) ck.checked = false;
+    const ci = document.getElementById('ci-'+k); if (ci) {ci.classList.remove('show'); ci.value='';}
+    const p = document.getElementById('ci-'+k+'-pass'); if(p){p.classList.remove('show'); p.value='';}
+  });
+  eqSel = [];
+  renderEqSel();
+  document.getElementById('m-alta').classList.add('open');
+}
+
+function togC(k,c){
+  const i = document.getElementById('ci-'+k);
+  const p = document.getElementById('ci-'+k+'-pass');
+  if(c){
+    i.classList.add('show');
+    if(p) p.classList.add('show');
+  } else {
+    i.classList.remove('show'); i.value = '';
+    if(p){ p.classList.remove('show'); p.value = ''; }
+  }
+}
+
+function renderEqSel(){
+  const el = document.getElementById('eq-sel-list');
+  if(!eqSel.length){
+      el.innerHTML = '<div style="color:var(--t2);font-size:12.5px;padding:15px;text-align:center;background:var(--s2);border-radius:8px;border:1px dashed var(--border)">No se han asignado activos. Utilice los botones inferiores.</div>';
+      return;
+  }
+  el.innerHTML = eqSel.map((eq,i) => {
+    const badge = eq._nuevo
+      ? '<span class="badge cg" style="font-size:10px">✦ Recién ingresado</span>'
+      : `<span class="badge cb" style="font-size:10px">${eq.tipo}</span>`;
+    return `<div class="eqi sel" style="${eq._nuevo ? 'border-left-color:#10b981;background:var(--green-bg)' : ''}">
+      <div>
+        <div class="eqi-name">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+        <div class="eqi-detail">${eq.num_serie ? 'S/N: '+eq.num_serie : ''} ${eq._nuevo ? '· En espera de guardar' : '· Stock libre: '+eq.cantidad_libre}</div>
+      </div>
+      ${badge}
+      <input type="number" class="eqq" min="1" max="${eq._nuevo ? 99 : eq.cantidad_libre}" value="${eq.cantidad||1}" onchange="eqSel[${i}].cantidad=+this.value">
+      <button class="rm" onclick="eqSel.splice(${i},1);renderEqSel()">✕</button>
+    </div>`;
+  }).join('');
+}
+
+let _selEqContext = 'alta';
+
+async function openSelEq(contexto){
+  _selEqContext = contexto || 'alta';
+  invLibres = await api('/api/inventario/libres');
+  
+  if(_selEqContext === 'prestamo') {
+      renderSelEqListPrestamo(invLibres);
+  } else if (_selEqContext === 'edit') {
+      renderSelEqListEdit(invLibres, editEqSel.map(e => e.inv_id));
+  } else {
+      renderSelEqList(invLibres);
+  }
+  document.getElementById('m-sel-eq').classList.add('open');
+}
+
+function renderSelEqList(lista){
+  const el = document.getElementById('sel-eq-list');
+  if(!lista.length){
+      el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t2);font-size:13px">El almacén de inventario está vacío o todos los equipos están prestados.</div>';
+      return;
+  }
+  el.innerHTML = lista.map(eq => {
+    const ya = eqSel.find(s => s.inv_id === eq.id);
+    let specs = '';
+    if(eq.procesador) specs += `CPU:${eq.procesador} `;
+    if(eq.ram) specs += `RAM:${eq.ram} `;
+    if(eq.num_serie) specs += `S/N:${eq.num_serie}`;
+    
+    return `<div style="display:flex;align-items:center;justify-content:space-between;background:${ya ? 'var(--secondary-light)' : 'var(--surface)'};border:1px solid ${ya ? 'var(--secondary)' : 'var(--border)'};border-radius:8px;padding:12px 16px;gap:10px;box-shadow:var(--shadow-sm);transition:border 0.2s">
+      <div>
+        <div style="font-weight:600;font-size:13px;color:var(--text)">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+        <div style="font-size:11.5px;color:var(--t2);margin-top:3px">${specs} <span class="badge cg" style="margin-left:6px">${eq.cantidad_libre} Disponibles</span></div>
+      </div>
+      ${ya ? `<span class="badge cb" style="background:var(--primary);color:white">Seleccionado</span>` : `<button class="btn bs btn-sm" style="color:var(--secondary);border-color:var(--secondary)" onclick="selEq('${eq.id}')">Añadir</button>`}
+    </div>`;
+  }).join('');
+}
+
+function selEq(id){
+    const eq = invLibres.find(i => i.id === id);
+    if(!eq || eqSel.find(s => s.inv_id === id)) return;
+    eqSel.push({...eq, inv_id: eq.id, cantidad: 1});
+    renderEqSel();
+    renderSelEqList(invLibres);
+    closeM('m-sel-eq');
+}
+
+function filtSelEq(v){
+  const f = v.toLowerCase();
+  const filtered = invLibres.filter(eq => (eq.tipo+' '+(eq.marca||'')+' '+(eq.modelo||'')).toLowerCase().includes(f));
+  if(_selEqContext === 'alta') {
+      renderSelEqList(filtered);
+  } else if (_selEqContext === 'prestamo') {
+      renderSelEqListPrestamo(filtered);
+  } else {
+      const yaIds = editEqSel.map(e => e.inv_id);
+      renderSelEqListEdit(filtered, yaIds);
+  }
+}
+
+function getCuentas(){
+  const o = {};
+  ['vrtcl','correo','sap','pos','req'].forEach(k => {
+    if(document.getElementById('ck-'+k).checked){
+      o[k] = document.getElementById('ci-'+k).value;
+      const passEl = document.getElementById('ci-'+k+'-pass');
+      if(passEl && passEl.value) o[k+'_pass'] = passEl.value;
+    }
+  });
+  return o;
+}
+
+async function guardarAlta(){
+  const nombre = document.getElementById('a-nombre').value.trim();
+  if(!nombre){ toast('Debe proporcionar el nombre completo del empleado', 'r'); return; }
+  const btn = document.getElementById('btn-alta-save');
+  btn.innerHTML = '<span class="sp"></span> Evaluando...'; 
+  btn.disabled = true;
+  try {
+      const payload = {
+          nombre, 
+          fechaAlta: document.getElementById('a-fecha').value || today(),
+          direccion: document.getElementById('a-dir').value.trim(),
+          area: document.getElementById('a-area').value.trim(),
+          ubicacion: document.getElementById('a-ubic').value.trim(),
+          telefono: document.getElementById('a-tel').value.trim(),
+          observaciones: document.getElementById('a-obs').value.trim(),
+          cuentas: getCuentas(),
+          equipos: eqSel.filter(e => e.inv_id).map(e => ({ inv_id: e.inv_id, cantidad: e.cantidad||1 }))
+      };
+      const res = await api('/api/empleados', { method:'POST', body: JSON.stringify(payload) });
+      if(res.error) throw new Error(res.error);
+      
+      closeM('m-alta');
+      loadEmp();
+      toast('Expediente generado exitosamente', 'g');
+      
+      const genWord = document.getElementById('a-gen-word').checked;
+      if (genWord) {
+        window.open(`/api/docx/alta/${res.id}`, '_blank');
+        archCtx = { tipo: 'alta', id: res.id, file: null };
+        setupArchModal('Firma y Digitalización de Resguardo', nombre);
+        setTimeout(() => document.getElementById('m-arch').classList.add('open'), 600);
+      }
+  } catch(e) {
+      toast('Fallo del Sistema: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Guardar Empleado';
+      btn.disabled = false;
+  }
+}
+
+// ═══ EDITAR EMPLEADO ═══
+async function editarEmpleado(id) {
+  editEmpId = id;
+  editEqSel = [];
+  const e = await api(`/api/empleados/${id}`);
+  document.getElementById('edit-emp-sub').textContent = e.nombre;
+  document.getElementById('ee-nombre').value = e.nombre || '';
+  document.getElementById('ee-fecha').value  = e.fecha_alta || '';
+  
+  function setSelectOrAdd(selId, val) {
+    const sel = document.getElementById(selId);
+    if (!val) { sel.value = ''; return; }
+    let opt = [...sel.options].find(o => o.value === val);
+    if (!opt) { opt = new Option(val, val); sel.appendChild(opt); }
+    sel.value = val;
+  }
+  setSelectOrAdd('ee-dir', e.direccion);
+  setSelectOrAdd('ee-area', e.area);
+  document.getElementById('ee-ubic').value   = e.ubicacion || '';
+  document.getElementById('ee-tel').value    = e.telefono || '';
+  document.getElementById('ee-obs').value    = e.observaciones || '';
+  
+  const c = e.cuentas || {};
+  ['vrtcl','correo','sap','pos','req'].forEach(k => {
+    const ck = document.getElementById('ee-ck-'+k);
+    const ci = document.getElementById('ee-ci-'+k);
+    const cp = document.getElementById('ee-ci-'+k+'-pass');
+    
+    ck.checked = !!c[k];
+    ci.value   = c[k] || '';
+    if(cp) cp.value = c[k+'_pass'] || '';
+    
+    if(c[k]) {
+      ci.classList.add('show');
+      if(cp) cp.classList.add('show');
+    } else {
+      ci.classList.remove('show');
+      if(cp) cp.classList.remove('show');
+    }
+  });
+  
+  editEqSel = (e.equipos || []).map(eq => ({
+    inv_id: eq.inv_id, tipo: eq.tipo, marca: eq.marca || '',
+    modelo: eq.modelo || '', num_serie: eq.num_serie || '',
+    cantidad: eq.cantidad || 1, cantidad_libre: 99
+  }));
+  renderEditEqList();
+  document.getElementById('m-edit-emp').classList.add('open');
+}
+
+function togCE(k, c) {
+  const i = document.getElementById('ee-ci-'+k);
+  const p = document.getElementById('ee-ci-'+k+'-pass');
+  if(c){
+    i.classList.add('show');
+    if(p) p.classList.add('show');
+  } else {
+    i.classList.remove('show'); i.value='';
+    if(p) { p.classList.remove('show'); p.value=''; }
+  }
+}
+
+function renderEditEqList() {
+  const el = document.getElementById('ee-eq-list');
+  if (!editEqSel.length) { el.innerHTML = '<div style="color:var(--t2);font-size:12px;padding:15px;text-align:center;background:var(--s2);border-radius:8px;border:1px dashed var(--border)">Sin equipos asignados</div>'; return; }
+  el.innerHTML = editEqSel.map((eq, i) => {
+    const badge = eq._nuevo
+      ? '<span class="badge cg" style="font-size:10px">✦ Nuevo en inventario</span>'
+      : `<span class="badge cb" style="font-size:10px">${eq.tipo}</span>`;
+    return `<div class="eqi sel" style="${eq._nuevo?'border-color:#b5e4cc;background:var(--green-bg)':''}">
+      <div><div class="eqi-name">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+      <div class="eqi-detail">${eq.num_serie ? 'S/N: '+eq.num_serie : ''} ${eq._nuevo ? '· Se registrará en inventario' : '· Cantidad actual: '+eq.cantidad}</div></div>
+      ${badge}
+      <input type="number" class="eqq" min="1" value="${eq.cantidad||1}" onchange="editEqSel[${i}].cantidad=+this.value">
+      <button class="rm" onclick="editEqSel.splice(${i},1);renderEditEqList()">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function openSelEqEdit() {
+  _selEqContext = 'edit';
+  invLibres = await api('/api/inventario/libres');
+  const yaIds = editEqSel.map(e => e.inv_id);
+  renderSelEqListEdit(invLibres, yaIds);
+  document.getElementById('m-sel-eq').classList.add('open');
+}
+
+function renderSelEqListEdit(lista, yaIds) {
+  const el = document.getElementById('sel-eq-list');
+  if (!lista.length) { el.innerHTML='<div style="text-align:center;padding:30px;color:var(--t2);font-size:13px">El almacén de inventario está vacío o todos los equipos están prestados.</div>'; return; }
+  el.innerHTML = lista.map(eq => {
+    const ya = yaIds.includes(eq.id) || editEqSel.find(s => s.inv_id === eq.id);
+    let specs = '';
+    if(eq.procesador) specs += `CPU:${eq.procesador} `;
+    if(eq.ram) specs += `RAM:${eq.ram} `;
+    if(eq.num_serie) specs += `S/N:${eq.num_serie}`;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;background:${ya?'var(--secondary-light)':'var(--surface)'};border:1px solid ${ya?'var(--secondary)':'var(--border)'};border-radius:8px;padding:12px 16px;gap:10px;margin-bottom:8px;box-shadow:var(--shadow-sm);transition:border 0.2s">
+      <div><div style="font-weight:600;font-size:13px;color:var(--text)">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+      <div style="font-size:11.5px;color:var(--t2);margin-top:3px">${specs} <span class="badge cg" style="margin-left:6px">${eq.cantidad_libre} libres</span></div></div>
+      ${ya ? '<span class="badge cb" style="background:var(--primary);color:white">Seleccionado</span>' : `<button class="btn bs btn-sm" style="color:var(--secondary);border-color:var(--secondary)" onclick="selEqEdit('${eq.id}')">Añadir</button>`}
+    </div>`;
+  }).join('');
+}
+
+function selEqEdit(id) {
+  const eq = invLibres.find(i => i.id === id);
+  if (!eq || editEqSel.find(s => s.inv_id === id)) return;
+  editEqSel.push({...eq, inv_id: eq.id, cantidad: 1});
+  renderEditEqList();
+  closeM('m-sel-eq');
+}
+
+function getCuentasEdit() {
+  const o = {};
+  ['vrtcl','correo','sap','pos','req'].forEach(k => {
+    if (document.getElementById('ee-ck-'+k).checked) {
+      o[k] = document.getElementById('ee-ci-'+k).value;
+      const passEl = document.getElementById('ee-ci-'+k+'-pass');
+      if (passEl && passEl.value) o[k+'_pass'] = passEl.value;
+    }
+  });
+  return o;
+}
+
+async function guardarEditEmpleado() {
+  const nombre = document.getElementById('ee-nombre').value.trim();
+  if (!nombre) { toast('Nombre obligatorio','r'); return; }
+  const btn = document.getElementById('btn-edit-emp-save');
+  btn.innerHTML = '<span class="sp"></span> Guardando...'; btn.disabled = true;
+  try {
+      let res = await api(`/api/empleados/${editEmpId}`, {method:'PUT', body:JSON.stringify({
+        nombre, fechaAlta: document.getElementById('ee-fecha').value,
+        direccion: document.getElementById('ee-dir').value,
+        area: document.getElementById('ee-area').value,
+        ubicacion: document.getElementById('ee-ubic').value.trim(),
+        telefono: document.getElementById('ee-tel').value.trim(),
+        observaciones: document.getElementById('ee-obs').value.trim(),
+        cuentas: getCuentasEdit()
+      })});
+      if(res.error) throw new Error(res.error);
+
+      res = await api(`/api/empleados/${editEmpId}/asignaciones`, {method:'POST', body:JSON.stringify({
+        equipos: editEqSel.filter(e => e.inv_id).map(e => ({inv_id: e.inv_id, cantidad: e.cantidad||1})),
+        cuentas: getCuentasEdit()
+      })});
+      if(res.error) throw new Error(res.error);
+
+      closeM('m-edit-emp');
+      loadEmp();
+      if(document.getElementById('m-det-emp').classList.contains('open')) verDetalle(editEmpId);
+      toast('Empleado actualizado','g');
+  } catch (err) {
+      toast('Error: ' + err.message, 'r');
+  } finally {
+      btn.innerHTML = 'Guardar Cambios'; btn.disabled = false;
+  }
+}
+
+// ═══ BAJA ═══
+function openMBaja(id){
+  const e = allEmp.find(x => x.id === id);
+  if(!e) return;
+  curBajaId = id;
+  document.getElementById('baja-sub').textContent = e.nombre;
+  document.getElementById('baja-nom').textContent = e.nombre;
+  document.getElementById('baja-fecha').value = today();
+  document.getElementById('baja-motivo').value = '';
+  document.getElementById('m-baja').classList.add('open');
+}
+
+async function confirmarBaja(){
+  const btn = document.getElementById('btn-baja-conf');
+  btn.innerHTML = '<span class="sp"></span>'; 
+  btn.disabled = true;
+  const e = allEmp.find(x => x.id === curBajaId);
+  try {
+      const res = await api('/api/bajas', { method:'POST', body: JSON.stringify({
+          empId: curBajaId,
+          fechaBaja: document.getElementById('baja-fecha').value || today(),
+          motivo: document.getElementById('baja-motivo').value.trim()
+      })});
+      if(res.error) throw new Error(res.error);
+      
+      closeM('m-baja');
+      loadEmp();
+      toast('Proceso de baja completado', 'g');
+      
+      const genWord = document.getElementById('b-gen-word').checked;
+      if (genWord) {
+        window.open(`/api/docx/baja/${res.id}`, '_blank');
+        archCtx = { tipo: 'baja', id: res.id, file: null };
+        setupArchModal('Comprobante de Devolución Físico', e?.nombre || '');
+        setTimeout(() => document.getElementById('m-arch').classList.add('open'), 800);
+      }
+  } catch(err) {
+      toast('Error crítico: ' + err.message, 'r');
+  } finally {
+      btn.innerHTML = 'Ejecutar Baja'; 
+      btn.disabled = false;
+  }
+}
+
+// ═══ BAJAS PAGE ═══
+async function loadBajas(){
+    allBajas = await api('/api/bajas');
+    renderBajas(allBajas);
+}
+
+function renderBajas(lista){
+  const tb = document.getElementById('t-bajas');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="6"><div class="emp"><p>El registro de bajas históricas está vacío.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(b => {
+    const eqs = (b.equipos_snap || []).map(eq => `<span class="badge cgr" style="border:1px solid var(--border)">${eq.tipo}</span>`).join(' ') || '<span style="color:var(--t2)">Ninguno</span>';
+    const bA = b.archivo_alta ? `<a class="arch-btn" href="/api/archivo/${b.archivo_alta}" target="_blank">📄 Antiguo Resguardo</a>` : '';
+    const bB = b.archivo_baja ? `<a class="arch-btn" style="color:#047857;background:var(--green-bg);border-color:#a7f3d0" href="/api/archivo/${b.archivo_baja}" target="_blank">📄 Ver Devolución</a>` : '';
+    return `<tr>
+        <td><div style="font-weight:600;color:var(--text);font-size:13.5px">${b.nombre}</div></td>
+        <td style="font-size:12.5px">${b.area || '—'}</td>
+        <td><span class="badge cr" style="background:#fee2e2;border:1px solid #fca5a5">${fmtF(b.fecha_baja)}</span></td>
+        <td style="font-size:12.5px;color:var(--t2)">${b.motivo || 'No especificado'}</td>
+        <td><div class="chips">${eqs}</div></td>
+        <td><div class="actions">
+            ${bA}${bB}
+            <a class="arch-btn" style="color:var(--secondary);border-color:var(--secondary)" href="/api/docx/baja/${b.id}" target="_blank">📝 Generar Nuevo .docx</a>
+            <label class="arch-btn" style="cursor:pointer;background:var(--primary);color:white">
+                ⬆ Subir<input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="subDir(event,'${b.id}','baja')">
+            </label>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtBajas(v){
+    const f = v.toLowerCase();
+    renderBajas(allBajas.filter(b => b.nombre.toLowerCase().includes(f)));
+}
+
+// ═══ PRÉSTAMOS TEMPORALES ═══
+async function loadPrestamos(){
+    allPrestamos = await api('/api/prestamos');
+    renderPrestamos(allPrestamos);
+}
+
+function renderPrestamos(lista){
+  const tb = document.getElementById('t-prestamos');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="7"><div class="emp"><p>No existen préstamos temporales registrados actualmente.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(p => {
+    const eqs = p.equipos.map(eq => `<span class="badge cgr" style="border:1px solid var(--border)">${eq.cantidad}x ${eq.tipo}</span>`).join(' ') || '—';
+    const estB = p.estado === 'activo' ? '<span class="badge cy" style="background:#fef3c7;color:#b45309;border:1px solid #fde68a">Vigente</span>' : '<span class="badge cg">Devuelto</span>';
+    const docB = p.archivo_prestamo ? `<a class="arch-btn" style="color:#047857;background:var(--green-bg);border-color:#a7f3d0" href="/api/archivo/${p.archivo_prestamo}" target="_blank">📄 Ver Doc</a>` : '';
+    
+    return `<tr>
+        <td><div style="font-weight:600;color:var(--text);font-size:13.5px">${p.nombre_solicitante}</div></td>
+        <td style="font-size:12.5px">${p.area || '—'}</td>
+        <td style="font-size:12px;color:var(--t2)">${fmtF(p.fecha_prestamo)}</td>
+        <td style="font-size:12px;color:var(--t2);font-weight:600">${fmtF(p.fecha_esperada)}</td>
+        <td><div class="chips">${eqs}</div></td>
+        <td>${estB}</td>
+        <td><div class="actions">
+            ${p.estado === 'activo' ? `<button class="btn bg-btn btn-sm" onclick="devolverPrestamo('${p.id}')">Marcar Devuelto</button>` : ''}
+            <a class="arch-btn" href="/api/docx/prestamo/${p.id}" target="_blank">📝 Carta</a>
+            ${docB}
+            <label class="arch-btn" style="cursor:pointer;background:var(--primary);color:white">
+                ⬆ Subir<input type="file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="subDir(event,'${p.id}','prestamo')">
+            </label>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtPrestamos(v){
+    const f = v.toLowerCase();
+    renderPrestamos(allPrestamos.filter(p => p.nombre_solicitante.toLowerCase().includes(f)));
+}
+
+function openMPrestamo(){
+  ['p-nombre','p-area','p-devolucion','p-notas'].forEach(i => document.getElementById(i).value='');
+  document.getElementById('p-devolucion').value = today();
+  prestamoEqSel = [];
+  renderPrestamoEqSel();
+  document.getElementById('m-prestamo').classList.add('open');
+}
+
+function renderPrestamoEqSel(){
+  const el = document.getElementById('p-eq-sel-list');
+  if(!prestamoEqSel.length){
+      el.innerHTML = '<div style="color:var(--t2);font-size:12.5px;padding:15px;text-align:center;background:var(--s2);border-radius:8px;border:1px dashed var(--border)">Agregue equipos para prestar usando el botón inferior.</div>';
+      return;
+  }
+  el.innerHTML = prestamoEqSel.map((eq,i) => {
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--yellow);border-radius:8px;padding:12px 16px;margin-bottom:8px;box-shadow:var(--shadow-sm)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-weight:600;font-size:13px;color:var(--text)">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+            <div style="font-size:11px;color:var(--t2);margin-top:2px">${eq.num_serie ? 'S/N: '+eq.num_serie : ''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+              <input type="number" style="width:60px;padding:4px;text-align:center" min="1" max="${eq.cantidad_libre}" value="${eq.cantidad||1}" onchange="prestamoEqSel[${i}].cantidad=+this.value">
+              <button class="rm" onclick="prestamoEqSel.splice(${i},1);renderPrestamoEqSel()">✕</button>
+          </div>
+      </div>
+      <div>
+         <input type="text" style="width:100%;padding:6px;font-size:12px;background:#fefce8;border:1px solid #fde68a" placeholder="Describa el estado de entrega (Ej. Cable roto, raspones, etc.)" value="${eq.notas_estado || ''}" onchange="prestamoEqSel[${i}].notas_estado=this.value">
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSelEqListPrestamo(lista){
+  const el = document.getElementById('sel-eq-list');
+  if(!lista.length){
+      el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t2);font-size:13px">El almacén está vacío o todos los equipos están ocupados.</div>';
+      return;
+  }
+  el.innerHTML = lista.map(eq => {
+    const ya = prestamoEqSel.find(s => s.inv_id === eq.id);
+    let specs = '';
+    if(eq.num_serie) specs += `S/N:${eq.num_serie}`;
+    
+    return `<div style="display:flex;align-items:center;justify-content:space-between;background:${ya ? '#fefce8' : 'var(--surface)'};border:1px solid ${ya ? '#fde68a' : 'var(--border)'};border-radius:8px;padding:12px 16px;gap:10px;box-shadow:var(--shadow-sm);transition:border 0.2s">
+      <div>
+        <div style="font-weight:600;font-size:13px;color:var(--text)">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+        <div style="font-size:11.5px;color:var(--t2);margin-top:3px">${specs} <span class="badge cg" style="margin-left:6px">${eq.cantidad_libre} Disp.</span></div>
+      </div>
+      ${ya ? `<span class="badge cy" style="background:#f59e0b;color:white">Seleccionado</span>` : `<button class="btn bs btn-sm" style="color:#b45309;border-color:#fde68a" onclick="selEqPrestamo('${eq.id}')">Seleccionar</button>`}
+    </div>`;
+  }).join('');
+}
+
+function selEqPrestamo(id){
+    const eq = invLibres.find(i => i.id === id);
+    if(!eq || prestamoEqSel.find(s => s.inv_id === id)) return;
+    prestamoEqSel.push({...eq, inv_id: eq.id, cantidad: 1, notas_estado: 'Buen estado'});
+    renderPrestamoEqSel();
+    renderSelEqListPrestamo(invLibres);
+    closeM('m-sel-eq');
+}
+
+async function guardarPrestamo(){
+  const nombre = document.getElementById('p-nombre').value.trim();
+  const area = document.getElementById('p-area').value.trim();
+  if(!nombre || !area){ toast('Solicitante y Área son campos obligatorios', 'r'); return; }
+  
+  if(prestamoEqSel.length === 0){ toast('Debe seleccionar al menos un equipo para prestar', 'r'); return; }
+
+  const btn = document.getElementById('btn-prestamo-save');
+  btn.innerHTML = '<span class="sp"></span> Procesando...'; 
+  btn.disabled = true;
+  
+  try {
+      const payload = {
+          nombre_solicitante: nombre, 
+          area,
+          fecha_esperada: document.getElementById('p-devolucion').value,
+          notas: document.getElementById('p-notas').value.trim(),
+          equipos: prestamoEqSel.map(e => ({ inv_id: e.inv_id, tipo: e.tipo, marca: e.marca, num_serie: e.num_serie, cantidad: e.cantidad, notas_estado: e.notas_estado }))
+      };
+      const res = await api('/api/prestamos', { method:'POST', body: JSON.stringify(payload) });
+      if(res.error) throw new Error(res.error);
+      
+      closeM('m-prestamo');
+      loadPrestamos();
+      toast('Préstamo autorizado exitosamente', 'g');
+      
+      const genWord = document.getElementById('p-gen-word').checked;
+      if (genWord) {
+        window.open(`/api/docx/prestamo/${res.id}`, '_blank');
+        archCtx = { tipo: 'prestamo', id: res.id, file: null };
+        setupArchModal('Digitalizar Carta de Préstamo', nombre);
+        setTimeout(() => document.getElementById('m-arch').classList.add('open'), 600);
+      }
+  } catch(e) {
+      toast('Fallo del Sistema: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Confirmar Préstamo';
+      btn.disabled = false;
+  }
+}
+
+async function devolverPrestamo(id){
+    if(!confirm('¿Confirma que ha recibido de vuelta todos los equipos en buen estado? Esta acción regresará el stock al inventario libre.')) return;
+    try {
+        const res = await api(`/api/prestamos/${id}/devolver`, { method:'PUT' });
+        if(res.error) throw new Error(res.error);
+        loadPrestamos();
+        toast('Stock retornado exitosamente', 'g');
+    } catch(e) {
+        toast('Error: ' + e.message, 'r');
+    }
+}
+
+// ═══ INVENTARIO ═══
+async function loadInv(){
+  allInv = await api('/api/inventario');
+  renderInv(allInv);
+}
+
+function imprimirEtiqueta(id, desc) {
+  document.getElementById('print-area').style.display = 'flex';
+  JsBarcode("#barcode", id, {
+    format: "CODE128", width: 2, height: 50, displayValue: true, fontSize: 14, margin: 10
+  });
+  document.getElementById('print-desc').textContent = desc;
+  window.print();
+  setTimeout(() => { document.getElementById('print-area').style.display = 'none'; }, 600);
+}
+
+function renderInv(lista){
+  const tb = document.getElementById('t-inv');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="7"><div class="emp"><p>El catálogo del inventario está completamente vacío.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(item => {
+    const libre = item.cantidad_libre, total = item.cantidad_total;
+    const qStyle = libre === 0 ? 'color:var(--red2);font-weight:700' : libre > 0 && libre < total ? 'color:#b45309;font-weight:700' : 'color:#047857;font-weight:700';
+    
+    const passIcon = item.contrasena ? `<span style="background:var(--secondary-light);border-radius:4px;padding:1px 4px;font-size:10px;cursor:help;border:1px solid #bae6fd" title="Clave del SO: ${item.contrasena}">🔑</span>` : '';
+    const numTel = item.numero_tel ? `<span style="font-weight:500;color:var(--primary)">📞 ${item.numero_tel}</span>` : '';
+    
+    const specsArray = [item.procesador, item.ram, item.almacenamiento, numTel].filter(Boolean);
+    const specsText = specsArray.length > 0 ? specsArray.join(' <span style="color:#cbd5e1">|</span> ') : '—';
+    const specsHtml = `<div style="font-size:11.5px;color:var(--t2)">${specsText} ${passIcon}</div>`;
+    
+    const nsipHtml = `<div style="font-size:11.5px;color:var(--text)">${item.num_serie ? '<strong>S/N:</strong> ' + item.num_serie : '—'}</div>
+                      <div style="font-size:11px;color:var(--primary);margin-top:2px;font-family:monospace">${item.ip_dir ? '🌐 ' + item.ip_dir : ''}</div>`;
+    
+    const asigs = (item.asignados_a || []).map(a => `<span class="link" style="display:block;margin-bottom:2px;font-size:12.5px" onclick="verDetalle('${a.emp_id}')">👤 ${a.nombre}${a.cantidad > 1 ? ' <span class="badge cgr" style="font-size:9px">×'+a.cantidad+'</span>' : ''}</span>`).join('') || '<span style="color:var(--t2);font-size:12px;font-style:italic">En Almacén Central</span>';
+    
+    const estB = libre === 0 ? '<span class="badge cr">Agotado</span>' : libre < total ? '<span class="badge cy">Parcial</span>' : '<span class="badge cg">Libre</span>';
+    
+    return `<tr>
+        <td><span class="badge" style="background:var(--primary);color:white;padding:4px 10px">${item.tipo}</span></td>
+        <td>
+            <div style="font-weight:600;font-size:13.5px;color:var(--text)">${item.marca || 'Genérico'} ${item.modelo || ''}</div>
+            ${item.notas ? `<div style="font-size:11px;color:var(--t2);background:#fffbeb;display:inline-block;padding:2px 6px;border-radius:4px;margin-top:4px;border:1px solid #fde68a">📝 ${item.notas}</div>` : ''}
+        </td>
+        <td>${nsipHtml}</td>
+        <td>${specsHtml}</td>
+        <td><div style="font-size:15px;${qStyle}">${libre} <span style="font-size:11px;color:var(--t2);font-weight:500">de ${total}</span></div><div style="margin-top:4px">${estB}</div></td>
+        <td>${asigs}</td>
+        <td><div class="actions">
+            <button class="btn bs btn-sm" style="color:var(--secondary);border-color:var(--secondary)" onclick="imprimirEtiqueta('${item.id}', '${item.tipo} ${item.marca||''}')">🖨️ Etiqueta</button>
+            <button class="btn bs btn-sm" onclick="editInv('${item.id}')">Editar</button>
+            <button class="btn bd btn-sm" style="padding:4px 8px" onclick="delInv('${item.id}')">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtInv(){
+    const tipo = document.getElementById('f-tipo-inv').value;
+    const est = document.getElementById('f-est-inv').value;
+    const txt = document.getElementById('s-inv').value.toLowerCase();
+    
+    renderInv(allInv.filter(i => {
+        let matcheaEst = true;
+        if(est === 'libre') matcheaEst = i.cantidad_libre > 0;
+        if(est === 'prestado') matcheaEst = i.cantidad_libre < i.cantidad_total;
+        
+        return (!tipo || i.tipo === tipo) &&
+               (!est || matcheaEst) &&
+               (!txt || (i.tipo+' '+(i.marca||'')+' '+(i.modelo||'')+' '+(i.num_serie||'')).toLowerCase().includes(txt));
+    }));
+}
+
+async function loadIPsLibresIntoSelect(){
+  const ips = await api('/api/ips/libres');
+  const html = ips.map(ip => `<option data-id="${ip.id}" value="${ip.direccion}"></option>`).join('');
+  document.querySelectorAll('datalist#dl-ips-libres').forEach(dl => dl.innerHTML = html);
+}
+
+function openMInv(id=null){
+  curEditId.inv = id;
+  document.getElementById('inv-m-title').textContent = id ? 'Modificar Registro Físico' : 'Ingresar Activo al Catálogo';
+  
+  ['inv-marca','inv-modelo','inv-ns','inv-notas','inv-cpu','inv-pass','inv-ip-sel','inv-tel'].forEach(i => { const e = document.getElementById(i); if(e) e.value = ''; });
+  
+  document.getElementById('inv-tipo').value = '';
+  document.getElementById('inv-cant').value = '1';
+  ['inv-ram','inv-storage','inv-winlic','inv-office','inv-cat'].forEach(i => { const e = document.getElementById(i); if(e) e.value = ''; });
+  
+  document.getElementById('inv-specs-grp').style.display = 'none';
+  document.getElementById('inv-ip-grp').style.display = 'none';
+  document.getElementById('inv-grp-tel').style.display = 'none';
+  
+  loadIPsLibresIntoSelect();
+  document.getElementById('m-inv').classList.add('open');
+}
+
+function onInvTipo(){
+  const t = document.getElementById('inv-tipo').value;
+  document.getElementById('inv-specs-grp').style.display = ['PC','Laptop'].includes(t) ? 'block' : 'none';
+  document.getElementById('inv-ip-grp').style.display = ['PC','Laptop','Teléfono IP','Teléfono Conmutador','Adaptador RED-USB', 'Smart TV', 'Impresora Térmica', 'Impresora de etiquetas'].includes(t) ? 'flex' : 'none';
+  document.getElementById('inv-grp-tel').style.display = ['Celular'].includes(t) ? 'flex' : 'none';
+}
+
+async function editInv(id){
+  const item = allInv.find(i => i.id === id);
+  if(!item) return;
+  openMInv(id);
+  await loadIPsLibresIntoSelect();
+  
+  if(item.ip_id && item.ip_dir){
+    const dl = document.getElementById('dl-ips-libres');
+    if(!dl.querySelector(`option[value="${item.ip_dir}"]`)){
+       dl.innerHTML += `<option data-id="${item.ip_id}" value="${item.ip_dir}"></option>`;
+    }
+    document.getElementById('inv-ip-sel').value = item.ip_dir;
+  }
+  
+  document.getElementById('inv-tipo').value = item.tipo || ''; 
+  onInvTipo();
+  
+  const mapCampos = { 'marca':'marca', 'modelo':'modelo', 'ns':'num_serie', 'notas':'notas', 'cpu':'procesador', 'pass':'contrasena', 'tel':'numero_tel' };
+  for (const [idEl, prop] of Object.entries(mapCampos)) {
+      const el = document.getElementById('inv-'+idEl);
+      if(el) el.value = item[prop] || '';
+  }
+
+  document.getElementById('inv-cant').value = item.cantidad_total || 1;
+  document.getElementById('inv-ram').value = item.ram || '';
+  document.getElementById('inv-storage').value = item.almacenamiento || '';
+  if(document.getElementById('inv-winlic')) document.getElementById('inv-winlic').value = item.licencia_windows || '';
+  if(document.getElementById('inv-office')) document.getElementById('inv-office').value = item.version_office || '';
+  if(document.getElementById('inv-cat')) document.getElementById('inv-cat').value = item.categoria || '';
+}
+
+async function guardarInv(){
+  const tipo = document.getElementById('inv-tipo').value;
+  if(!tipo){ toast('El Tipo de Dispositivo es el único campo estrictamente obligatorio', 'r'); return; }
+  
+  const ipId = getIpIdFromStr(document.getElementById('inv-ip-sel').value);
+  const data = {
+      tipo, 
+      marca: document.getElementById('inv-marca').value.trim(),
+      modelo: document.getElementById('inv-modelo').value.trim(),
+      num_serie: document.getElementById('inv-ns').value.trim(),
+      ip_id: ipId,
+      procesador: document.getElementById('inv-cpu').value.trim(),
+      ram: document.getElementById('inv-ram').value,
+      almacenamiento: document.getElementById('inv-storage').value,
+      licencia_windows: document.getElementById('inv-winlic') ? document.getElementById('inv-winlic').value : '',
+      version_office: document.getElementById('inv-office') ? document.getElementById('inv-office').value : '',
+      contrasena: document.getElementById('inv-pass') ? document.getElementById('inv-pass').value.trim() : '',
+      numero_tel: document.getElementById('inv-tel') ? document.getElementById('inv-tel').value.trim() : '',
+      cantidad_total: parseInt(document.getElementById('inv-cant').value) || 1,
+      notas: document.getElementById('inv-notas').value.trim()
+  };
+  
+  const btn = document.getElementById('btn-inv-save');
+  btn.innerHTML = '<span class="sp"></span> Salvando...';
+  btn.disabled = true;
+  try {
+      const res = curEditId.inv ? await api(`/api/inventario/${curEditId.inv}`, {method:'PUT', body:JSON.stringify(data)}) : await api('/api/inventario', {method:'POST', body:JSON.stringify(data)});
+      if(res.error) throw new Error(res.error);
+      closeM('m-inv');
+      loadInv();
+      toast(curEditId.inv ? 'Actualización exitosa en la base de datos' : 'Equipo nuevo registrado y validado en Almacén', 'g');
+  } catch(e) {
+      toast('Transacción rechazada: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Guardar Registro';
+      btn.disabled = false;
+  }
+}
+
+async function delInv(id){
+  const item = allInv.find(i => i.id === id);
+  if(!confirm(`Esta acción destruirá permanentemente el registro de:\n\n${item?.tipo} ${item?.modelo||''}\nS/N: ${item?.num_serie||'Sin Serie'}\n\n¿Desea continuar?`)) return;
+  const res = await api(`/api/inventario/${id}`, {method:'DELETE'});
+  if(res.ok){
+      loadInv();
+      toast('Activo Fijo eliminado del catálogo', 'g');
+  } else {
+      toast('Operación bloqueada por seguridad: ' + (res.error || 'Desconocido'), 'r');
+  }
+}
+
+// ═══ IMPRESORAS ═══
+async function loadImp(){
+    allImp = await api('/api/impresoras');
+    renderImp(allImp);
+}
+
+function renderImp(lista){
+  const tb = document.getElementById('t-imp');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="7"><div class="emp"><p>El centro de impresión está vacío.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(imp => {
+    const n = imp.nombre || (imp.marca + ' ' + imp.modelo);
+    const eqC = imp.equipos_conectados?.length || 0;
+    const eqB = eqC > 5 ? `<span class="badge cr" style="background:#fee2e2;border:1px solid #fca5a5">⚠ ${eqC} terminales</span>` : (eqC > 0 ? `<span class="badge cb" style="background:var(--secondary-light);color:var(--primary)">${eqC} Computadoras</span>` : `<span class="badge cgr">Aislada (0)</span>`);
+    const estB = imp.estado === 'activa' ? '<span class="badge cg">En Línea</span>' : imp.estado === 'mantenimiento' ? '<span class="badge cy">Taller/Falla</span>' : '<span class="badge cr">Baja Técnica</span>';
+    
+    return `<tr>
+        <td><div style="font-weight:600;font-size:13.5px;color:var(--text)">${n}</div><div style="font-size:11.5px;color:var(--t2);margin-top:2px">${imp.modelo || '—'}</div></td>
+        <td><span class="badge co" style="border:1px solid #ffedd5">${imp.tipo_consumible || 'Tóner'}</span>${imp.modelo_consumible ? `<div style="font-size:11px;color:var(--t2);margin-top:4px">Clave: ${imp.modelo_consumible}</div>` : ''}</td>
+        <td style="font-size:12.5px;color:var(--primary);font-weight:500">${imp.ubicacion || '—'}</td>
+        <td style="font-size:12px;color:var(--t2);font-family:monospace;letter-spacing:0.05em">${imp.ip_dir || 'Local / USB'}</td>
+        <td>${eqB}</td>
+        <td>${estB}</td>
+        <td><div class="actions">
+            <button class="btn bs btn-sm" style="color:var(--secondary);border-color:var(--secondary)" onclick="editImp('${imp.id}')">Configurar</button>
+            <button class="btn bd btn-sm" onclick="delImp('${imp.id}')">✕</button>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtImp(v){
+    const f = v.toLowerCase();
+    renderImp(allImp.filter(i => ((i.nombre||'')+(i.marca||'')+(i.modelo||'')+(i.ubicacion||'')).toLowerCase().includes(f)));
+}
+
+async function openMImp(id=null){
+  curEditId.imp = id;
+  impEqSel = [];
+  document.getElementById('imp-m-title').textContent = id ? 'Panel de Configuración de Impresora' : 'Alta de Nuevo Equipo de Impresión';
+  
+  ['imp-nom','imp-marca','imp-modelo','imp-cons','imp-ubic','imp-notas','imp-ip'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('imp-tipo').value = '';
+  document.getElementById('imp-estado').value = 'activa';
+  
+  const hojasContainer = document.getElementById('imp-hojas-container');
+  if (hojasContainer) {
+    hojasContainer.style.display = id ? 'block' : 'none';
+  }
+  
+  await loadIPsLibresIntoSelect();
+  renderImpEqList();
+  if (id) {
+    loadImpServicios(id);
+  }
+  document.getElementById('m-imp').classList.add('open');
+}
+
+async function editImp(id){
+  const imp = allImp.find(i => i.id === id);
+  if(!imp) return;
+  await openMImp(id);
+  
+  document.getElementById('imp-nom').value = imp.nombre || '';
+  document.getElementById('imp-marca').value = imp.marca || '';
+  document.getElementById('imp-modelo').value = imp.modelo || '';
+  document.getElementById('imp-tipo').value = imp.tipo_consumible || '';
+  document.getElementById('imp-cons').value = imp.modelo_consumible || '';
+  document.getElementById('imp-ubic').value = imp.ubicacion || '';
+  document.getElementById('imp-notas').value = imp.notas || '';
+  document.getElementById('imp-estado').value = imp.estado || 'activa';
+  
+  if(imp.ip_id && imp.ip_dir){
+    const dl = document.getElementById('dl-ips-libres');
+    if(!dl.querySelector(`option[value="${imp.ip_dir}"]`)){
+       dl.innerHTML += `<option data-id="${imp.ip_id}" value="${imp.ip_dir}"></option>`;
+    }
+    document.getElementById('imp-ip').value = imp.ip_dir;
+  }
+  
+  impEqSel = (imp.equipos_conectados || []).map(e => ({
+      inv_id: e.inv_id, tipo: e.tipo, marca: e.marca, modelo: e.modelo,
+      tipo_conn: e.tipo_conn || 'red', asignado_a: e.asignado_a || '', asignado_area: e.asignado_area || ''
+  }));
+  renderImpEqList();
+}
+
+function renderImpEqList(){
+  document.getElementById('imp-eq-list').innerHTML = impEqSel.map((eq,i) => `
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;box-shadow:var(--shadow-sm)">
+      <div>
+        <div style="font-size:13px;font-weight:600;cursor:pointer" class="link" onclick="closeM('m-imp'); showPage('inventario'); editInv('${eq.inv_id}')">${eq.tipo} ${eq.marca||''} ${eq.modelo||''}</div>
+        <div style="font-size:11.5px;color:var(--t2);margin-top:4px">${eq.asignado_a ? '👤 ' + eq.asignado_a + (eq.asignado_area ? ' — ' + eq.asignado_area : '') : '🖥️ En almacén general'}</div>
+      </div>
+      <select style="width:110px;font-size:12.5px;padding:6px;border-radius:6px;border:1px solid #cbd5e1" onchange="impEqSel[${i}].tipo_conn=this.value">
+         <option value="red" ${eq.tipo_conn==='red'?'selected':''}>Vía Red</option>
+         <option value="local" ${eq.tipo_conn==='local'?'selected':''}>Cable USB</option>
+      </select>
+      <button class="rm" onclick="impEqSel.splice(${i},1);renderImpEqList()">✕</button>
+    </div>`).join('');
+}
+
+async function openSelImpEq(){
+  const inv = await api('/api/inventario');
+  const pcs = inv.filter(i => ['PC','Laptop'].includes(i.tipo));
+  
+  const el = document.createElement('div');
+  el.id = 'modal-imp-sel';
+  el.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)';
+  
+  const listHtml = pcs.map(eq => {
+    let asig_nombre = 'En almacén (Sin asignar)';
+    let asig_area = '';
+    if (eq.asignados_a && eq.asignados_a.length > 0) {
+        asig_nombre = eq.asignados_a[0].nombre;
+        asig_area = eq.asignados_a[0].area || 'Sistemas';
+    }
+    
+    return `<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;box-shadow:var(--shadow-sm);transition:all 0.2s">
+      <div>
+        <div style="font-weight:600;font-size:13.5px;color:var(--text)">${eq.tipo} ${eq.marca||''}</div>
+        <div style="font-size:12px;color:var(--secondary);margin-top:4px;font-weight:500;">👤 ${asig_nombre} <span style="color:var(--t2);font-weight:400">— ${asig_area}</span></div>
+        <div style="font-size:10.5px;color:var(--t2);margin-top:4px">${eq.num_serie ? 'S/N: '+eq.num_serie : ''}</div>
+      </div>
+      <button class="btn bp btn-sm" onclick="addImpEq('${eq.id}','${eq.tipo}','${eq.marca||''}','${eq.modelo||''}','${asig_nombre}');document.getElementById('modal-imp-sel').remove()">Vincular</button>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `<div style="background:var(--bg);border-radius:16px;padding:25px;max-width:550px;width:100%;max-height:85vh;overflow-y:auto;position:relative;box-shadow:var(--shadow-lg);border:1px solid var(--border)">
+    <button style="position:absolute;top:15px;right:15px;background:var(--surface);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;cursor:pointer;color:var(--t2);box-shadow:var(--shadow-sm)" onclick="document.getElementById('modal-imp-sel').remove()">✕</button>
+    <div style="font-weight:700;margin-bottom:18px;font-size:18px;color:var(--primary);font-family:'DM Serif Display',serif">Vincular Estación de Trabajo</div>
+    <div class="search-bar" style="margin-bottom:15px;width:100%;background:var(--surface)">
+      <svg width="14" height="14" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Localizar computadora por nombre de empleado..." style="width:100%" oninput="const v=this.value.toLowerCase(); [...this.parentElement.nextElementSibling.children].forEach(c=>{ c.style.display=c.innerText.toLowerCase().includes(v)?'flex':'none' })">
+    </div>
+    <div style="display:flex;flex-direction:column;padding-right:5px">${listHtml}</div>
+  </div>`;
+  document.body.appendChild(el);
+}
+
+function addImpEq(inv_id, tipo, marca, modelo, asignado_a){
+    impEqSel.push({inv_id, tipo, marca, modelo, tipo_conn: 'red', asignado_a});
+    renderImpEqList();
+}
+
+async function guardarImp(){
+  const ubic = document.getElementById('imp-ubic').value.trim();
+  if(!ubic){ toast('Requisito: Defina una ubicación física para localizar la máquina.', 'r'); return; }
+  
+  const ipId = getIpIdFromStr(document.getElementById('imp-ip').value);
+  const data = {
+      nombre: document.getElementById('imp-nom').value.trim(),
+      marca: document.getElementById('imp-marca').value.trim(),
+      modelo: document.getElementById('imp-modelo').value.trim(),
+      tipo_consumible: document.getElementById('imp-tipo').value,
+      modelo_consumible: document.getElementById('imp-cons').value.trim(),
+      ubicacion: ubic,
+      ip_id: ipId,
+      estado: document.getElementById('imp-estado').value,
+      notas: document.getElementById('imp-notas').value.trim(),
+      equipos: impEqSel.map(e => ({inv_id: e.inv_id, tipo_conn: e.tipo_conn}))
+  };
+  
+  const btn = document.getElementById('btn-imp-save');
+  btn.innerHTML = '<span class="sp"></span> Configurando...';
+  btn.disabled = true;
+  try {
+      const res = curEditId.imp ? await api(`/api/impresoras/${curEditId.imp}`, {method:'PUT', body:JSON.stringify(data)}) : await api('/api/impresoras', {method:'POST', body:JSON.stringify(data)});
+      if(res.error) throw new Error(res.error);
+      closeM('m-imp');
+      loadImp();
+      toast('Topología de impresión guardada con éxito', 'g');
+  } catch(e) {
+      toast('Error al guardar: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Guardar Configuración';
+      btn.disabled = false;
+  }
+}
+
+async function delImp(id){
+    if(!confirm('Precaución: Esta acción destruirá la configuración de la impresora y desvinculará a todas las PC asociadas. ¿Confirmar eliminación?')) return;
+    const res = await api(`/api/impresoras/${id}`, {method:'DELETE'});
+    if(res.ok){
+        loadImp();
+        toast('Impresora destruida del sistema', 'g');
+    }
+}
+
+// ═══ CÁMARAS (CCTV) ═══
+async function loadCam(){
+  allCam = await api('/api/camaras');
+  const areas = [...new Set(allCam.map(c => c.area))].sort();
+  const sel = document.getElementById('f-area-cam');
+  sel.innerHTML = '<option value="">Cualquier Área</option>' + areas.map(a => `<option>${a}</option>`).join('');
+  renderCam(allCam);
+}
+
+function renderCam(lista){
+  const tb = document.getElementById('t-cam');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="7"><div class="emp"><p>El circuito cerrado no tiene nodos registrados.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(c => {
+    const estB = c.estado === 'activa' ? '<span class="badge cg">Transmitiendo</span>' : c.estado === 'falla' ? '<span class="badge cr">Falla de Red / Óptica</span>' : '<span class="badge cgr">Punto Ciego</span>';
+    return `<tr>
+        <td><span class="badge cp" style="background:#f5f3ff;border:1px solid #ddd6fe">${c.area}</span></td>
+        <td style="font-weight:600;color:var(--text);font-size:13.5px">${c.ubicacion}</td>
+        <td style="font-size:12.5px">${[c.marca, c.modelo].filter(Boolean).join(' ') || 'Genérica'}</td>
+        <td style="font-size:12.5px;font-family:monospace;color:var(--primary);font-weight:600">${c.ip_dir || '<span style="color:var(--t2);font-weight:400;font-family:sans-serif">DHCP / Analógica</span>'}</td>
+        <td>${estB}</td>
+        <td style="font-size:12px;color:var(--t2)">${c.notas || '—'}</td>
+        <td><div class="actions">
+            <button class="btn bs btn-sm" style="color:var(--secondary);border-color:var(--secondary)" onclick="editCam('${c.id}')">Editar</button>
+            <button class="btn bd btn-sm" onclick="delCam('${c.id}')">✕</button>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtCam(v=''){
+    const area = document.getElementById('f-area-cam').value;
+    const f = v.toLowerCase();
+    renderCam(allCam.filter(c => (!area || c.area === area) && (!f || c.ubicacion.toLowerCase().includes(f) || (c.area||'').toLowerCase().includes(f))));
+}
+
+async function openMCam(id=null){
+  curEditId.cam = id;
+  document.getElementById('cam-m-title').textContent = id ? 'Configuración de Nodo CCTV' : 'Alta de Cámara (CCTV)';
+  
+  ['cam-area','cam-ubic','cam-marca','cam-modelo','cam-notas','cam-ip'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('cam-estado').value = 'activa';
+  
+  await loadIPsLibresIntoSelect();
+  document.getElementById('m-cam').classList.add('open');
+}
+
+async function editCam(id){
+  const c = allCam.find(x => x.id === id);
+  if(!c) return;
+  await openMCam(id);
+  
+  document.getElementById('cam-area').value = c.area || '';
+  document.getElementById('cam-ubic').value = c.ubicacion || '';
+  document.getElementById('cam-marca').value = c.marca || '';
+  document.getElementById('cam-modelo').value = c.modelo || '';
+  document.getElementById('cam-notas').value = c.notas || '';
+  document.getElementById('cam-estado').value = c.estado || 'activa';
+  
+  if(c.ip_id && c.ip_dir){
+    const dl = document.getElementById('dl-ips-libres');
+    if(!dl.querySelector(`option[value="${c.ip_dir}"]`)){
+       dl.innerHTML += `<option data-id="${c.ip_id}" value="${c.ip_dir}"></option>`;
+    }
+    document.getElementById('cam-ip').value = c.ip_dir;
+  }
+}
+
+async function guardarCam(){
+  const area = document.getElementById('cam-area').value.trim();
+  const ubic = document.getElementById('cam-ubic').value.trim();
+  if(!area || !ubic){ toast('Faltan requisitos: Debe llenar el área y la ubicación exacta', 'r'); return; }
+  
+  const ipId = getIpIdFromStr(document.getElementById('cam-ip').value);
+  const data = {
+      area, ubicacion: ubic, 
+      marca: document.getElementById('cam-marca').value.trim(), 
+      modelo: document.getElementById('cam-modelo').value.trim(), 
+      ip_id: ipId, 
+      estado: document.getElementById('cam-estado').value, 
+      notas: document.getElementById('cam-notas').value.trim()
+  };
+  
+  const btn = document.getElementById('btn-cam-save');
+  btn.innerHTML = '<span class="sp"></span> Guardando...';
+  btn.disabled = true;
+  try {
+      const res = curEditId.cam ? await api(`/api/camaras/${curEditId.cam}`, {method:'PUT', body:JSON.stringify(data)}) : await api('/api/camaras', {method:'POST', body:JSON.stringify(data)});
+      if(res.error) throw new Error(res.error);
+      closeM('m-cam');
+      loadCam();
+      toast('Topología de CCTV actualizada', 'g');
+  } catch(e) {
+      toast('Error en red: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Guardar Registro';
+      btn.disabled = false;
+  }
+}
+
+async function delCam(id){
+    if(!confirm('¿El nodo físico ha sido removido? Esta acción borrará la cámara permanentemente.')) return;
+    const res = await api(`/api/camaras/${id}`, {method:'DELETE'});
+    if(res.ok){
+        loadCam();
+        toast('Cámara eliminada del circuito', 'g');
+    }
+}
+
+// ═══ INFRAESTRUCTURA DE RED ═══
+async function loadRed(){
+  allRed = await api('/api/red');
+  const tipos = [...new Set(allRed.map(r => r.tipo))].sort();
+  document.getElementById('f-tipo-red').innerHTML = '<option value="">Cualquier Categoría</option>' + tipos.map(t => `<option>${t}</option>`).join('');
+  renderRed(allRed);
+}
+
+function renderRed(lista){
+  const tb = document.getElementById('t-red');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="8"><div class="emp"><p>No se ha documentado la infraestructura de telecomunicaciones.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(r => {
+    const estB = r.estado === 'activo' ? '<span class="badge cg">Operando (On-Line)</span>' : r.estado === 'mantenimiento' ? '<span class="badge cy" style="border:1px solid #fde68a">Intermitencia / Mant.</span>' : '<span class="badge cr">Offline / Quemado</span>';
+    return `<tr>
+        <td><span class="badge cb" style="background:var(--primary);color:white">${r.tipo}</span></td>
+        <td><div style="font-weight:600;font-size:13.5px;color:var(--text)">${r.nombre || '—'}</div><div style="font-size:11.5px;color:var(--t2);margin-top:2px">${r.marca || 'Marca genérica'}</div></td>
+        <td style="font-size:12.5px">${r.modelo || '—'}${r.num_serie ? `<div style="font-size:11px;color:var(--t2);margin-top:2px;font-family:monospace">S/N: ${r.num_serie}</div>` : ''}</td>
+        <td style="font-size:13px;font-family:monospace;color:var(--primary);font-weight:600">${r.ip_dir || '—'}</td>
+        <td style="font-size:12.5px">${r.ubicacion || '—'}</td>
+        <td style="text-align:center;font-weight:600;color:var(--secondary)">${r.puertos || '—'}</td>
+        <td>${estB}</td>
+        <td><div class="actions">
+            <button class="btn bs btn-sm" onclick="editRed('${r.id}')">Editar</button>
+            <button class="btn bd btn-sm" onclick="delRed('${r.id}')">✕</button>
+        </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtRed(v=''){
+    const tipo = document.getElementById('f-tipo-red').value;
+    const f = typeof v === 'string' ? v.toLowerCase() : '';
+    renderRed(allRed.filter(r => (!tipo || r.tipo === tipo) && (!f || (r.nombre||'').toLowerCase().includes(f) || (r.marca||'').toLowerCase().includes(f) || (r.modelo||'').toLowerCase().includes(f))));
+}
+
+async function openMRed(id=null){
+  curEditId.red = id;
+  document.getElementById('red-m-title').textContent = id ? 'Panel de Servidor/Nodo' : 'Alta de Nuevo Nodo de Red';
+  ['red-nom','red-marca','red-modelo','red-ns','red-ubic','red-notas','red-ip'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('red-tipo').value = '';
+  document.getElementById('red-puertos').value = '';
+  document.getElementById('red-estado').value = 'activo';
+  await loadIPsLibresIntoSelect();
+  document.getElementById('m-red').classList.add('open');
+}
+
+async function editRed(id){
+  const r = allRed.find(x => x.id === id);
+  if(!r) return;
+  await openMRed(id);
+  
+  document.getElementById('red-tipo').value = r.tipo || '';
+  document.getElementById('red-nom').value = r.nombre || '';
+  document.getElementById('red-marca').value = r.marca || '';
+  document.getElementById('red-modelo').value = r.modelo || '';
+  document.getElementById('red-ns').value = r.num_serie || '';
+  document.getElementById('red-ubic').value = r.ubicacion || '';
+  document.getElementById('red-puertos').value = r.puertos || '';
+  document.getElementById('red-notas').value = r.notas || '';
+  document.getElementById('red-estado').value = r.estado || 'activo';
+  
+  if(r.ip_id && r.ip_dir){
+    const dl = document.getElementById('dl-ips-libres');
+    if(!dl.querySelector(`option[value="${r.ip_dir}"]`)){
+       dl.innerHTML += `<option data-id="${r.ip_id}" value="${r.ip_dir}"></option>`;
+    }
+    document.getElementById('red-ip').value = r.ip_dir;
+  }
+}
+
+async function guardarRed(){
+  const tipo = document.getElementById('red-tipo').value;
+  if(!tipo){ toast('Requisito: Indique la Categoría del equipo de Red', 'r'); return; }
+  
+  const ipId = getIpIdFromStr(document.getElementById('red-ip').value);
+  const data = {
+      tipo, 
+      nombre: document.getElementById('red-nom').value.trim(),
+      marca: document.getElementById('red-marca').value.trim(),
+      modelo: document.getElementById('red-modelo').value.trim(),
+      num_serie: document.getElementById('red-ns').value.trim(),
+      ip_id: ipId,
+      ubicacion: document.getElementById('red-ubic').value.trim(),
+      puertos: parseInt(document.getElementById('red-puertos').value) || null,
+      notas: document.getElementById('red-notas').value.trim(),
+      estado: document.getElementById('red-estado').value
+  };
+  
+  const btn = document.getElementById('btn-red-save');
+  btn.innerHTML = '<span class="sp"></span> Desplegando...';
+  btn.disabled = true;
+  try {
+      const res = curEditId.red ? await api(`/api/red/${curEditId.red}`, {method:'PUT', body:JSON.stringify(data)}) : await api('/api/red', {method:'POST', body:JSON.stringify(data)});
+      if(res.error) throw new Error(res.error);
+      closeM('m-red');
+      loadRed();
+      toast('Topología de Infraestructura Actualizada', 'g');
+  } catch(e) {
+      toast('Alerta de Sistema: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Guardar Equipo';
+      btn.disabled = false;
+  }
+}
+
+async function delRed(id){
+    if(!confirm('PELIGRO: ¿Está seguro que este Servidor/Equipo de comunicación ya no pertenece al Hospital?')) return;
+    const res = await api(`/api/red/${id}`, {method:'DELETE'});
+    if(res.ok){
+        loadRed();
+        toast('Baja de Infraestructura consolidada', 'g');
+    }
+}
+
+// ═══ GESTIÓN DE IPs ═══
+async function loadIPs(){
+  allIPs = await api('/api/ips');
+  const libre = allIPs.filter(i => i.estado === 'libre').length;
+  const asig = allIPs.filter(i => i.estado === 'asignada').length;
+  const res_c = allIPs.filter(i => i.estado === 'reservada').length;
+  
+  const counter = document.getElementById('ip-counter');
+  if(counter) counter.innerHTML = `<span style="color:var(--secondary)">${asig}</span> en uso <span style="color:#cbd5e1">|</span> <span style="color:var(--green)">${libre}</span> pool DHCP <span style="color:#cbd5e1">|</span> <span style="color:var(--primary)">${res_c}</span> estáticas`;
+  renderIPs(allIPs);
+}
+
+function _ipAsignadaHtml(ip){
+  if(!ip.asignada_a && !ip.link) return '<span style="color:var(--t2);font-style:italic">Red sin dispositivo enlazado</span>';
+  const nombre = ip.asignada_a || ip.link?.nombre || 'Red Desconocida';
+  if(!ip.link) return `<span style="font-size:13px;font-weight:500;color:var(--text)">${nombre}</span>`;
+  
+  const {tipo, id} = ip.link;
+  const handlers = {
+    empleado: `showPage('empleados');setTimeout(()=>verDetalle('${id}'),350)`,
+    impresora: `showPage('impresoras')`,
+    camara: `showPage('camaras')`,
+    red: `showPage('red')`
+  };
+  const onclick = handlers[tipo] || '';
+  return `<span class="link" style="font-weight:600;font-size:13px" onclick="${onclick}" title="Click para auditar el equipo (${tipo})">👤 ${nombre}</span>`;
+}
+
+function renderIPs(lista){
+  const tb = document.getElementById('t-ips');
+  if(!lista.length){
+      tb.innerHTML = `<tr><td colspan="6"><div class="emp"><p>No se pudo cargar la tabla de enrutamiento.</p></div></td></tr>`;
+      return;
+  }
+  tb.innerHTML = lista.map(ip => {
+    const dot = ip.estado === 'libre' ? 'ip-libre' : ip.estado === 'asignada' ? 'ip-asig' : ip.estado === 'reservada' ? 'ip-res' : 'ip-libre';
+    const estB = ip.estado === 'libre' ? '<span class="badge cg">Libre / DHCP</span>' : ip.estado === 'asignada' ? '<span class="badge cy" style="border:1px solid #fde68a">IP Ocupada</span>' : '<span class="badge cb" style="background:var(--primary);color:white">IP Fija / Estática</span>';
+    const tipoB = ip.tipo_disp ? `<span class="badge cgr" style="border:1px solid var(--border)">${ip.tipo_disp}</span>` : '<span style="color:var(--t2)">—</span>';
+    
+    // Alerta de duplicidad visual
+    const numVeces = allIPs.filter(x => x.direccion === ip.direccion && x.estado === 'asignada' && x.tipo_disp !== 'Cámara').length;
+    const isDup = numVeces > 1 && ip.estado === 'asignada' && ip.tipo_disp !== 'Cámara';
+    const row_style = isDup ? 'background:#fef2f2;' : (ip.estado === 'libre' ? '' : ip.estado === 'reservada' ? 'background:#f8fafc' : '');
+    const dupAlert = isDup ? `<div style="font-size:10px;color:var(--red2);margin-top:2px;font-weight:600">⚠ DUPLICIDAD DETECTADA</div>` : '';
+    
+    return `<tr style="${row_style}">
+      <td>
+        <div style="font-weight:600;font-family:monospace;font-size:14px;letter-spacing:0.05em;color:var(--primary)">
+            <span class="ip-dot ${dot}" style="margin-right:8px;${isDup ? 'background:var(--red2)' : ''}"></span>${ip.direccion}
+        </div>
+        ${dupAlert}
+      </td>
+      <td>${estB}</td>
+      <td>${_ipAsignadaHtml(ip)}</td>
+      <td>${tipoB}</td>
+      <td style="font-size:12.5px;color:var(--t2)">${ip.notas || '—'}</td>
+      <td><button class="btn bs btn-sm" onclick="editIP('${ip.id}')">Admin</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filtIPs(){
+  const est = document.getElementById('f-est-ip').value;
+  const sub = document.getElementById('f-subred-ip').value;
+  const txt = document.getElementById('s-ip').value.toLowerCase();
+  renderIPs(allIPs.filter(ip => (
+    (!est || ip.estado === est) &&
+    (!sub || ip.direccion.startsWith(sub)) &&
+    (!txt || ip.direccion.includes(txt) || (ip.asignada_a||'').toLowerCase().includes(txt) || (ip.tipo_disp||'').toLowerCase().includes(txt) || (ip.link?.nombre||'').toLowerCase().includes(txt))
+  )));
+}
+
+function editIP(id){
+  const ip = allIPs.find(i => i.id === id); 
+  if(!ip) return;
+  curEditId.ip = id;
+  document.getElementById('ip-m-title').textContent = `Auditar Dirección IP`;
+  document.getElementById('ip-addr').value = ip.direccion;
+  document.getElementById('ip-estado').value = ip.estado || 'libre';
+  document.getElementById('ip-tipo-disp').value = ip.tipo_disp || '';
+  document.getElementById('ip-asig').value = ip.asignada_a || '';
+  document.getElementById('ip-notas').value = ip.notas || '';
+  document.getElementById('m-ip').classList.add('open');
+}
+
+async function guardarIP(){
+  try {
+      const res = await api(`/api/ips/${curEditId.ip}`, {method:'PUT', body:JSON.stringify({
+        estado: document.getElementById('ip-estado').value,
+        tipo_disp: document.getElementById('ip-tipo-disp').value.trim(),
+        asignada_a: document.getElementById('ip-asig').value.trim(),
+        notas: document.getElementById('ip-notas').value.trim()
+      })});
+      if(res.error) throw new Error(res.error);
+      closeM('m-ip');
+      loadIPs();
+      toast('Estado del nodo IP actualizado', 'g');
+  } catch(e) {
+      toast('Fallo de red: ' + e.message, 'r');
+  }
+}
+
+// ═══ DOCUMENTOS Y ARCHIVOS DIGITALES ═══
+function setupArchModal(title, sub){
+    document.getElementById('arch-title').textContent = title;
+    document.getElementById('arch-sub').textContent = sub;
+    document.getElementById('arch-fn').style.display = 'none';
+    document.getElementById('arch-inp').value = '';
+    document.getElementById('btn-arch-save').disabled = true;
+    archCtx.file = null;
+}
+
+function onArch(e){
+    const f = e.target.files[0];
+    if(!f) return;
+    archCtx.file = f;
+    document.getElementById('arch-fn').textContent = '✓ Archivo cargado en memoria: ' + f.name;
+    document.getElementById('arch-fn').style.display = 'block';
+    document.getElementById('btn-arch-save').disabled = false;
+}
+
+async function saveArch(){
+  if(!archCtx.file) return;
+  const fd = new FormData();
+  fd.append('archivo', archCtx.file);
+  const base_url = `/api/archivo/${archCtx.tipo}/${archCtx.id}`; // Soporta alta, baja, prestamo
+  
+  const btn = document.getElementById('btn-arch-save');
+  btn.innerHTML = '<span class="sp"></span> Transfiriendo...';
+  btn.disabled = true;
+  
+  try {
+      const r = await fetch(base_url, {method: 'POST', body: fd});
+      const d = await r.json();
+      if(!r.ok || d.error) throw new Error(d.error || 'Violación de seguridad al procesar archivo');
+      
+      closeM('m-arch');
+      toast('Respaldo Jurídico/Físico indexado al expediente', 'g');
+      
+      if(archCtx.tipo === 'baja') loadBajas();
+      if(archCtx.tipo === 'prestamo') loadPrestamos();
+      if(archCtx.tipo === 'alta' && curDetId) verDetalle(curDetId);
+  } catch(e) {
+      toast('Error I/O: ' + e.message, 'r');
+  } finally {
+      btn.innerHTML = 'Subir al Servidor';
+      btn.disabled = false;
+  }
+}
+
+async function subDir(event, id, tipo){
+  const f = event.target.files[0];
+  if(!f) return;
+  const fd = new FormData();
+  fd.append('archivo', f);
+  try {
+      const r = await fetch(`/api/archivo/${tipo}/${id}`, {method:'POST', body:fd});
+      const d = await r.json();
+      if(!r.ok || d.error) throw new Error(d.error || 'Error de I/O en servidor');
+      
+      toast('Documento legal sincronizado', 'g');
+      if(tipo === 'alta' && curDetId === id) verDetalle(id);
+      if(tipo === 'baja') loadBajas();
+      if(tipo === 'prestamo') loadPrestamos();
+  } catch(e) {
+      toast('Alerta: ' + e.message, 'r');
+  }
+}
+
+// ═══ HOJAS DE SERVICIO (MANTENIMIENTO) ═══
+let allServicios = [];
+
+async function loadServicios() {
+  const tableBody = document.getElementById('t-servicios');
+  tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--t2);"><span class="sp"></span> Cargando hojas de servicio...</td></tr>';
+  
+  try {
+    allImp = await api('/api/impresoras');
+    
+    const fImp = document.getElementById('f-servicio-imp');
+    const modalImp = document.getElementById('hoja-impresora');
+    
+    const prevFImpValue = fImp.value;
+    const prevModalImpValue = modalImp.value;
+    
+    fImp.innerHTML = '<option value="">Todas las impresoras</option>';
+    modalImp.innerHTML = '<option value="">— Seleccionar Impresora —</option>';
+    
+    allImp.forEach(imp => {
+      const label = `${imp.nombre || ''} - ${imp.marca || ''} ${imp.modelo || ''} (${imp.ubicacion || ''})`.trim();
+      fImp.innerHTML += `<option value="${imp.id}">${label}</option>`;
+      modalImp.innerHTML += `<option value="${imp.id}">${label}</option>`;
+    });
+    
+    fImp.value = prevFImpValue;
+    modalImp.value = prevModalImpValue;
+    
+    allServicios = await api('/api/hojas_servicio');
+    if (allServicios.error) throw new Error(allServicios.error);
+    
+    renderServicios(allServicios);
+  } catch (err) {
+    tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red2);font-weight:600;padding:20px;">Error: ${err.message}</td></tr>`;
+  }
+}
+
+function renderServicios(lista) {
+  const tableBody = document.getElementById('t-servicios');
+  if (lista.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--t2);">No se encontraron hojas de servicio.</td></tr>';
+    return;
+  }
+  
+  tableBody.innerHTML = lista.map(h => {
+    const catLabel = h.categoria === 'mantenimiento' ? 'Mantenimiento' : 'Servicio / Reparación';
+    const catClass = h.categoria === 'mantenimiento' ? 'cb' : 'cy';
+    const printerLabel = `${h.imp_marca || ''} ${h.imp_modelo || ''} <span style="font-family:monospace;font-size:11.5px;color:var(--t2);">(${h.imp_serial || ''})</span>`;
+    
+    return `
+      <tr>
+        <td>
+          <div style="font-weight:600;font-size:13.5px;color:var(--text);">${h.nombre_visible}</div>
+          <div style="font-size:11px;color:var(--t2);margin-top:2px;font-family:monospace;">Archivo: ${h.nombre_archivo}</div>
+        </td>
+        <td>${printerLabel}</td>
+        <td style="font-size:12.5px;color:var(--primary);font-weight:500;">${h.imp_ubicacion || '—'}</td>
+        <td style="font-size:12.5px;color:var(--t2);font-weight:600;">${fmtF(h.fecha)}</td>
+        <td><span class="badge ${catClass}">${catLabel}</span></td>
+        <td style="font-size:12.5px;color:var(--t2);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${h.notas || ''}">${h.notas || '—'}</td>
+        <td>
+          <div class="actions">
+            <a class="btn bs btn-sm" href="/api/archivo/${h.nombre_archivo}" target="_blank" style="color:var(--primary);border-color:var(--primary);">📥 Ver PDF</a>
+            <button class="btn bs btn-sm" style="color:var(--secondary);border-color:var(--secondary);" onclick="openMNuevaHoja('${h.id}')">Editar</button>
+            <button class="btn bd btn-sm" onclick="delHojaServicio('${h.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filtServicios() {
+  const fImp = document.getElementById('f-servicio-imp').value;
+  const fCat = document.getElementById('f-servicio-cat').value;
+  const query = document.getElementById('s-servicio').value.toLowerCase().trim();
+  const fFecha = document.getElementById('f-servicio-fecha').value;
+  
+  let lista = allServicios;
+  
+  if (fImp) {
+    lista = lista.filter(h => h.impresora_id === fImp);
+  }
+  if (fCat) {
+    lista = lista.filter(h => h.categoria === fCat);
+  }
+  if (fFecha) {
+    lista = lista.filter(h => h.fecha === fFecha);
+  }
+  if (query) {
+    lista = lista.filter(h => 
+      h.nombre_visible.toLowerCase().includes(query) || 
+      h.nombre_archivo.toLowerCase().includes(query) ||
+      (h.notas || '').toLowerCase().includes(query) ||
+      (h.imp_serial || '').toLowerCase().includes(query) ||
+      (h.imp_modelo || '').toLowerCase().includes(query)
+    );
+  }
+  
+  renderServicios(lista);
+}
+
+function clearServicioFilters() {
+  document.getElementById('f-servicio-imp').value = '';
+  document.getElementById('f-servicio-cat').value = '';
+  document.getElementById('s-servicio').value = '';
+  document.getElementById('f-servicio-fecha').value = '';
+  filtServicios();
+}
+
+async function openMNuevaHoja(id=null, preselectedPrinterId=null) {
+  document.getElementById('hoja-id').value = id || '';
+  document.getElementById('hoja-nombre').value = '';
+  document.getElementById('hoja-impresora').value = preselectedPrinterId || '';
+  document.getElementById('hoja-fecha').value = today();
+  document.getElementById('hoja-categoria').value = '';
+  document.getElementById('hoja-notas').value = '';
+  
+  const fileInput = document.getElementById('hoja-file');
+  fileInput.value = '';
+  
+  if (allImp.length === 0) {
+    allImp = await api('/api/impresoras');
+  }
+  const modalImp = document.getElementById('hoja-impresora');
+  modalImp.innerHTML = '<option value="">— Seleccionar Impresora —</option>';
+  allImp.forEach(imp => {
+    const label = `${imp.nombre || ''} - ${imp.marca || ''} ${imp.modelo || ''} (${imp.ubicacion || ''})`.trim();
+    modalImp.innerHTML += `<option value="${imp.id}">${label}</option>`;
+  });
+  if (preselectedPrinterId) {
+    modalImp.value = preselectedPrinterId;
+  }
+  
+  const title = document.getElementById('hoja-m-title');
+  const fileGroup = document.getElementById('hoja-file-group');
+  
+  if (id) {
+    title.textContent = 'Editar Hoja de Servicio';
+    fileGroup.style.display = 'none';
+    fileInput.required = false;
+    
+    const hoja = allServicios.find(h => h.id === id);
+    if (hoja) {
+      document.getElementById('hoja-nombre').value = hoja.nombre_visible || '';
+      document.getElementById('hoja-impresora').value = hoja.impresora_id || '';
+      document.getElementById('hoja-fecha').value = hoja.fecha || '';
+      document.getElementById('hoja-categoria').value = hoja.categoria || '';
+      document.getElementById('hoja-notas').value = hoja.notas || '';
+    }
+  } else {
+    title.textContent = 'Nueva Hoja de Servicio';
+    fileGroup.style.display = 'block';
+    fileInput.required = true;
+  }
+  
+  document.getElementById('m-hoja-servicio').classList.add('open');
+}
+
+async function guardarHojaServicio(event) {
+  event.preventDefault();
+  const id = document.getElementById('hoja-id').value;
+  const nombre_visible = document.getElementById('hoja-nombre').value.trim();
+  const impresora_id = document.getElementById('hoja-impresora').value;
+  const fecha = document.getElementById('hoja-fecha').value;
+  const categoria = document.getElementById('hoja-categoria').value;
+  const notas = document.getElementById('hoja-notas').value.trim();
+  
+  if (!nombre_visible || !impresora_id || !fecha || !categoria) {
+    toast('Todos los campos marcados con * son obligatorios', 'r');
+    return;
+  }
+  
+  const btn = document.getElementById('btn-hoja-save');
+  btn.innerHTML = '<span class="sp"></span> Guardando...';
+  btn.disabled = true;
+  
+  try {
+    if (id) {
+      const res = await api(`/api/hojas_servicio/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ nombre_visible, fecha, categoria, notas })
+      });
+      if (res.error) throw new Error(res.error);
+      toast('Hoja de servicio actualizada', 'g');
+    } else {
+      const fileInput = document.getElementById('hoja-file');
+      if (!fileInput.files.length) {
+        toast('Debe seleccionar un archivo PDF', 'r');
+        btn.innerHTML = 'Guardar Hoja';
+        btn.disabled = false;
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('archivo', fileInput.files[0]);
+      formData.append('impresora_id', impresora_id);
+      formData.append('nombre_visible', nombre_visible);
+      formData.append('fecha', fecha);
+      formData.append('categoria', categoria);
+      formData.append('notas', notas);
+      
+      const response = await fetch('/api/hojas_servicio', {
+        method: 'POST',
+        body: formData
+      });
+      const res = await response.json();
+      if (!response.ok || res.error) throw new Error(res.error || 'Fallo interno en el servidor');
+      toast('Hoja de servicio subida exitosamente', 'g');
+    }
+    
+    closeM('m-hoja-servicio');
+    
+    if (document.getElementById('page-servicios').classList.contains('active')) {
+      loadServicios();
+    }
+    if (document.getElementById('m-imp').classList.contains('open') && curEditId.imp) {
+      loadImpServicios(curEditId.imp);
+    }
+  } catch(e) {
+    toast('Error: ' + e.message, 'r');
+  } finally {
+    btn.innerHTML = 'Guardar Hoja';
+    btn.disabled = false;
+  }
+}
+
+async function loadImpServicios(printerId) {
+  const container = document.getElementById('imp-hojas-list');
+  container.innerHTML = '<div style="font-size:12.5px;color:var(--t2);padding:5px;">Cargando hojas de servicio...</div>';
+  try {
+    const todas = await api('/api/hojas_servicio');
+    if (todas.error) throw new Error(todas.error);
+    const filtradas = todas.filter(h => h.impresora_id === printerId);
+    
+    if (filtradas.length === 0) {
+      container.innerHTML = '<div style="color:var(--t2);font-size:12.5px;padding:15px;text-align:center;background:var(--s2);border-radius:8px;border:1px dashed var(--border)">No hay hojas de servicio cargadas para esta impresora.</div>';
+      return;
+    }
+    
+    container.innerHTML = filtradas.map(h => {
+      const catLabel = h.categoria === 'mantenimiento' ? 'Mantenimiento' : 'Servicio / Reparación';
+      const catClass = h.categoria === 'mantenimiento' ? 'cb' : 'cy';
+      return `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:var(--shadow-sm);display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:600;font-size:13px;color:var(--text);">${h.nombre_visible}</div>
+            <div style="font-size:11.5px;color:var(--t2);margin-top:2px;">
+              Fecha: ${fmtF(h.fecha)} · <span class="badge ${catClass}" style="font-size:10px;padding:2px 6px;">${catLabel}</span>
+            </div>
+            ${h.notas ? `<div style="font-size:11px;color:var(--t2);margin-top:4px;font-style:italic;">"${h.notas}"</div>` : ''}
+          </div>
+          <div class="actions" style="display:flex;gap:6px;">
+            <a class="btn bs btn-sm" href="/api/archivo/${h.nombre_archivo}" target="_blank" title="Ver PDF" style="padding:4px 8px;display:flex;align-items:center;">📥 Ver</a>
+            <button class="btn bs btn-sm" onclick="openMNuevaHoja('${h.id}')" title="Editar" style="padding:4px 8px;color:var(--secondary);border-color:var(--secondary);">✏️</button>
+            <button class="btn bd btn-sm" onclick="delHojaServicio('${h.id}')" title="Eliminar" style="padding:4px 8px;">✕</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    container.innerHTML = `<div style="color:var(--red2);font-size:12.5px;">Error al cargar: ${err.message}</div>`;
+  }
+}
+
+async function delHojaServicio(id) {
+  if (!confirm('¿Está seguro de que desea eliminar esta hoja de servicio? Esta acción no se puede deshacer.')) return;
+  try {
+    const res = await api(`/api/hojas_servicio/${id}`, { method: 'DELETE' });
+    if (res.error) throw new Error(res.error);
+    toast('Hoja de servicio eliminada', 'g');
+    
+    if (document.getElementById('m-imp').classList.contains('open') && curEditId.imp) {
+      loadImpServicios(curEditId.imp);
+    }
+    if (document.getElementById('page-servicios').classList.contains('active')) {
+      loadServicios();
+    }
+  } catch (err) {
+    toast('Error: ' + err.message, 'r');
+  }
+}
+
+// ═══ ARRANQUE DEL SISTEMA ═══
+function checkLogin() {
+  const pwd = document.getElementById('login-pass').value;
+  if (pwd === "Zupperusuario") {
+    sessionStorage.setItem("hosp_auth", "1");
+    document.getElementById("login-overlay").style.display = "none";
+    loadDash();
+  } else {
+    toast("Clave de Seguridad Inválida. Acceso Denegado.", "r");
+    document.getElementById('login-pass').value = '';
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if(sessionStorage.getItem("hosp_auth") === "1") {
+    document.getElementById("login-overlay").style.display = "none";
+    loadDash();
+  } else {
+    document.getElementById("login-overlay").style.display = "flex";
+  }
+});
+</script>
+</body>
+</html>
